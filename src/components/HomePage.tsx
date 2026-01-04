@@ -17,12 +17,12 @@ function AnimatedBackground() {
           key={i}
           className="absolute w-2 h-2 bg-[#2ECC71] rounded-full opacity-10"
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: `${Math.random() * 100}%`,
+            y: `${Math.random() * 100}%`,
           }}
           animate={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: `${Math.random() * 100}%`,
+            y: `${Math.random() * 100}%`,
             scale: [1, 1.5, 1],
           }}
           transition={{
@@ -74,7 +74,7 @@ function ScrollProgress() {
 
 export function HomePage() {
   return (
-    <main className="relative min-h-screen bg-black overflow-x-hidden">
+    <main className="relative min-h-screen bg-black overflow-x-hidden w-full max-w-[100vw]">
       <AnimatedBackground />
       <ScrollProgress />
       

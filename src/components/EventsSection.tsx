@@ -806,8 +806,8 @@ export function EventsSection() {
         <PremiumBackground />
 
         {/* Ambient Glow Effects */}
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#2ECC71]/5 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#27AE60]/5 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
+        <div className="absolute -top-64 -left-64 w-[500px] h-[500px] bg-[#2ECC71]/5 rounded-full blur-[150px]" />
+        <div className="absolute -bottom-48 -right-48 w-[400px] h-[400px] bg-[#27AE60]/5 rounded-full blur-[120px]" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Section Header */}
@@ -844,28 +844,29 @@ export function EventsSection() {
               className="flex justify-center mt-12 sm:mt-16 lg:mt-20"
             >
               <motion.button
-                onClick={() => navigate('/events')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative inline-flex items-center gap-3 px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-transparent border border-[#2ECC71]/40 rounded-full text-[#2ECC71] font-semibold text-sm sm:text-base overflow-hidden transition-all duration-300 hover:border-[#2ECC71] hover:shadow-lg hover:shadow-[#2ECC71]/20"
+                onClick={() => navigate('/activities/events')}
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.97 }}
+                className="relative px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-white font-bold text-base transition-all duration-300 shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] overflow-hidden group"
               >
-                {/* Hover Background */}
+                {/* Shine Effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] to-[#27AE60]"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+                  initial={{ x: '-150%' }}
+                  whileHover={{ x: '150%' }}
+                  transition={{ duration: 0.8 }}
                 />
 
-                <span className="relative z-10 group-hover:text-white transition-colors duration-300">
+                <span className="relative inline-flex items-center gap-3">
+                  <ArrowRight className="w-5 h-5" />
                   Explore All Events
+                  <motion.span
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.span>
                 </span>
-                <motion.span
-                  className="relative z-10 inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#2ECC71]/20 group-hover:bg-white/20 transition-colors duration-300"
-                  whileHover={{ x: 4 }}
-                >
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:text-white transition-colors duration-300" />
-                </motion.span>
               </motion.button>
             </motion.div>
           )}
