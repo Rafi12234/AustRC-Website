@@ -40,6 +40,8 @@ interface GitHubContributor {
   avatar_url: string;
   html_url: string;
   contributions: number;
+  additions?: number;
+  deletions?: number;
 }
 
 interface GitHubRepo {
@@ -353,8 +355,25 @@ const useGitHubData = () => {
       
       const contributorsData = await contributorsRes.json();
       
+      // Add static lines data for top contributors (from GitHub insights)
+      const linesData: Record<string, { additions: number; deletions: number }> = {
+        'Rafi12234': { additions: 2760200, deletions: 56475 },
+        'Saobia3i': { additions: 5742, deletions: 1499507 },
+        'Ahnaf152020': { additions: 5263, deletions: 34 },
+        'saidulislamshehab': { additions: 404, deletions: 2684335 },
+        'arany677': { additions: 22594, deletions: 21925 },
+        'webdevaustrc-2025': { additions: 1417736, deletions: 989 },
+      };
+      
+      // Enrich contributors with lines data
+      const enrichedContributors = contributorsData.map((c: GitHubContributor) => ({
+        ...c,
+        additions: linesData[c.login]?.additions || 0,
+        deletions: linesData[c.login]?.deletions || 0,
+      }));
+      
       // Calculate total commits
-      const totalCommits = contributorsData.reduce(
+      const totalCommits = enrichedContributors.reduce(
         (acc: number, c: GitHubContributor) => acc + c.contributions, 
         0
       );
@@ -371,7 +390,7 @@ const useGitHubData = () => {
       const repoInfo = await repoRes.json();
 
       const newData: GitHubData = {
-        contributors: contributorsData,
+        contributors: enrichedContributors,
         repoData: repoInfo,
         totalCommits,
         lastFetched: new Date(),
@@ -506,7 +525,18 @@ const LiveIndicator = ({ isLive, isRefreshing }: { isLive: boolean; isRefreshing
   );
 };
 
-// Top Contributor Card
+// Format large numbers with K/M suffix
+const formatLinesCount = (num: number): string => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K';
+  }
+  return num.toString();
+};
+
+// Top Contributor Card - Clean Professional Design with Neon Green Glow
 const TopContributorCard = ({ 
   contributor, 
   rank, 
@@ -518,208 +548,147 @@ const TopContributorCard = ({
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const [isHovered, setIsHovered] = useState(false);
 
   const rankConfig = {
     1: { 
-      icon: Trophy, 
-      color: 'from-yellow-400 to-yellow-600', 
-      bgColor: 'rgba(234,179,8,0.1)',
-      borderColor: 'rgba(234,179,8,0.3)',
-      glowColor: 'rgba(234,179,8,0.5)',
-      label: '1st',
-      size: 'w-32 h-32'
+      
+      gradient: 'from-yellow-400 to-amber-500', 
+      textColor: 'text-gray-300',
+      label: '1st Place'
     },
     2: { 
-      icon: Medal, 
-      color: 'from-gray-300 to-gray-500', 
-      bgColor: 'rgba(156,163,175,0.1)',
-      borderColor: 'rgba(156,163,175,0.3)',
-      glowColor: 'rgba(156,163,175,0.5)',
-      label: '2nd',
-      size: 'w-28 h-28'
+      
+      gradient: 'from-gray-300 to-gray-400', 
+      textColor: 'text-gray-300',
+      label: '2nd Place'
     },
     3: { 
-      icon: Award, 
-      color: 'from-amber-600 to-amber-800', 
-      bgColor: 'rgba(180,83,9,0.1)',
-      borderColor: 'rgba(180,83,9,0.3)',
-      glowColor: 'rgba(180,83,9,0.5)',
-      label: '3rd',
-      size: 'w-28 h-28'
+      
+      gradient: 'from-amber-600 to-amber-700', 
+      textColor: 'text-gray-300',
+      label: '3rd Place'
     },
   }[rank] || { 
     icon: Star, 
-    color: 'from-[#2ECC71] to-[#27AE60]', 
-    bgColor: 'rgba(46,204,113,0.1)',
-    borderColor: 'rgba(46,204,113,0.3)',
-    glowColor: 'rgba(46,204,113,0.5)',
-    label: `${rank}th`,
-    size: 'w-24 h-24'
+    gradient: 'from-[#2ECC71] to-[#27AE60]', 
+    textColor: 'text-[#2ECC71]',
+    label: `${rank}th Place`
   };
 
   const RankIcon = rankConfig.icon;
+  const totalLines = (contributor.additions || 0) + (contributor.deletions || 0);
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50, scale: 0.8 }}
+      initial={{ opacity: 0, y: 40, scale: 0.9 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ 
-        duration: 0.8, 
+        duration: 0.6, 
         delay,
         type: "spring",
-        stiffness: 100
+        stiffness: 120
       }}
-      className={`relative ${rank === 1 ? 'md:-mt-8 z-10' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="relative"
     >
-      {rank === 1 && (
-        <motion.div
-          className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 rounded-3xl blur-xl opacity-30"
-          animate={{ 
-            opacity: [0.2, 0.4, 0.2],
-            scale: [1, 1.02, 1]
-          }}
-          transition={{ duration: 3, repeat: Infinity }}
-        />
-      )}
+      {/* Neon Green Glow Border Effect */}
+      <motion.div
+        className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-[#2ECC71] via-[#27AE60] to-[#2ECC71]"
+        animate={{ 
+          boxShadow: [
+            '0 0 20px rgba(46,204,113,0.4), 0 0 40px rgba(46,204,113,0.2)',
+            '0 0 30px rgba(46,204,113,0.6), 0 0 60px rgba(46,204,113,0.3)',
+            '0 0 20px rgba(46,204,113,0.4), 0 0 40px rgba(46,204,113,0.2)'
+          ]
+        }}
+        transition={{ duration: 2, repeat: Infinity }}
+      />
       
       <motion.div
-        className="relative bg-gradient-to-br from-[rgba(30,30,30,0.9)] to-[rgba(20,20,20,0.9)] border rounded-3xl p-6 backdrop-blur-xl overflow-hidden"
-        style={{ 
-          borderColor: rankConfig.borderColor,
-          boxShadow: isHovered ? `0 0 40px ${rankConfig.glowColor}` : 'none'
-        }}
-        whileHover={{ scale: 1.05, y: -10 }}
-        transition={{ duration: 0.3 }}
+        className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 w-[240px]"
+        whileHover={{ y: -8, scale: 1.03 }}
       >
+        {/* Rank Badge */}
         <motion.div
-          className={`absolute inset-0 bg-gradient-to-br ${rankConfig.color} opacity-5`}
-          animate={{ opacity: isHovered ? 0.15 : 0.05 }}
-        />
-        
-        <motion.div
-          className={`absolute -top-3 -right-3 w-12 h-12 bg-gradient-to-br ${rankConfig.color} rounded-full flex items-center justify-center shadow-lg z-20`}
+          className={`absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br ${rankConfig.gradient} rounded-full flex items-center justify-center shadow-lg z-10`}
           initial={{ scale: 0, rotate: -180 }}
           animate={isInView ? { scale: 1, rotate: 0 } : {}}
-          transition={{ duration: 0.6, delay: delay + 0.3, type: "spring" }}
-          whileHover={{ scale: 1.2, rotate: 10 }}
+          transition={{ duration: 0.5, delay: delay + 0.2, type: "spring" }}
         >
-          <RankIcon className="w-6 h-6 text-black" />
+          {/* <RankIcon className="w-5 h-5 text-black" /> */}
         </motion.div>
 
-        <motion.div
-          className="absolute top-4 left-4 text-4xl font-black opacity-10"
-          style={{ 
-            background: `linear-gradient(135deg, ${rank === 1 ? '#fbbf24' : rank === 2 ? '#9ca3af' : '#b45309'}, transparent)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}
-        >
+        {/* Rank Number */}
+        <div className={`absolute top-3 left-4 text-3xl font-black ${rankConfig.textColor} opacity-30`}>
           #{rank}
-        </motion.div>
+        </div>
 
-        <div className="relative z-10 flex flex-col items-center pt-4">
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center pt-2">
+          {/* Avatar with green glow */}
           <div className="relative mb-4">
             <motion.div
-              className={`absolute -inset-2 rounded-full bg-gradient-to-r ${rankConfig.color}`}
-              style={{ padding: '2px' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            >
-              <div className="w-full h-full rounded-full bg-black" />
-            </motion.div>
-            
-            <motion.div
-              className={`absolute -inset-3 rounded-full bg-gradient-to-r ${rankConfig.color} blur-md`}
-              animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+              className="absolute -inset-2 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full blur-md opacity-50"
+              animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            
-            <motion.div 
-              className={`relative ${rankConfig.size} rounded-full overflow-hidden border-2`}
-              style={{ borderColor: rank === 1 ? '#fbbf24' : rank === 2 ? '#9ca3af' : '#b45309' }}
-              whileHover={{ scale: 1.1 }}
+            <div 
+              className="relative rounded-full overflow-hidden border-2 border-[#2ECC71]/60"
+              style={{ width: '80px', height: '80px' }}
             >
               <img
                 src={contributor.avatar_url}
                 alt={contributor.login}
                 className="w-full h-full object-cover"
               />
-            </motion.div>
-
-            <motion.div
-              className={`absolute bottom-1 right-1 w-4 h-4 bg-gradient-to-r ${rankConfig.color} rounded-full border-2 border-black`}
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+            </div>
           </div>
 
-          <motion.div 
-            className="text-center space-y-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: delay + 0.4 }}
+          {/* Username */}
+          <h4 className="text-lg font-bold text-white mb-1 text-center">
+            {contributor.login}
+          </h4>
+
+          {/* Rank Label */}
+          <span className={`text-xs font-semibold ${rankConfig.textColor} mb-3`}>
+            {rankConfig.label}
+          </span>
+          
+          {/* Commits */}
+          <div className="flex items-center gap-2 mb-2">
+            <GitCommit className="w-4 h-4 text-[#2ECC71]" />
+            <span className="text-xl font-bold text-white">
+              {contributor.contributions}
+            </span>
+            <span className="text-gray-400 text-sm">commits</span>
+          </div>
+
+          {/* Lines Modified */}
+          {totalLines > 0 && (
+            <div className="flex items-center gap-3 mb-4 text-sm">
+              <div className="flex items-center gap-1">
+                <span className="text-white font-semibold">+{formatLinesCount(contributor.additions || 0)}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-white font-semibold">-{formatLinesCount(contributor.deletions || 0)}</span>
+              </div>
+            </div>
+          )}
+
+          {/* View Profile Button */}
+          <motion.a
+            href={contributor.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 bg-[rgba(46,204,113,0.15)] border border-[#2ECC71]/50 rounded-full text-sm text-[#2ECC71] hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <h4 className="text-xl font-bold text-white">{contributor.login}</h4>
-            
-            <motion.div
-              className="flex items-center justify-center gap-2"
-              whileHover={{ scale: 1.05 }}
-            >
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
-                <GitCommit className="w-4 h-4 text-[#2ECC71]" />
-              </motion.div>
-              <span className={`text-2xl font-bold bg-gradient-to-r ${rankConfig.color} bg-clip-text text-transparent`}>
-                {contributor.contributions}
-              </span>
-              <span className="text-gray-400 text-sm">commits</span>
-            </motion.div>
-
-            <motion.a
-              href={contributor.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[rgba(46,204,113,0.1)] border border-[rgba(46,204,113,0.3)] rounded-full text-sm text-[#2ECC71] hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Github className="w-4 h-4" />
-              <span>View Profile</span>
-              <ExternalLink className="w-3 h-3" />
-            </motion.a>
-          </motion.div>
+            <Github className="w-4 h-4" />
+            <span className="font-medium">View Profile</span>
+            <ExternalLink className="w-3 h-3" />
+          </motion.a>
         </div>
-
-        {isHovered && (
-          <>
-            {[...Array(5)].map((_, i) => (
-              <motion.div
-                key={i}
-                className={`absolute w-1 h-1 rounded-full bg-gradient-to-r ${rankConfig.color}`}
-                initial={{ 
-                  x: Math.random() * 200, 
-                  y: 200,
-                  opacity: 0 
-                }}
-                animate={{ 
-                  y: -50,
-                  opacity: [0, 1, 0]
-                }}
-                transition={{ 
-                  duration: 1.5,
-                  delay: i * 0.1,
-                  repeat: Infinity
-                }}
-              />
-            ))}
-          </>
-        )}
       </motion.div>
     </motion.div>
   );
@@ -997,40 +966,49 @@ const GitHubStatsSection = () => {
         </motion.h4>
 
         {loading ? (
-          <div className="flex justify-center items-center gap-8 flex-wrap">
+          <div className="flex justify-center items-center gap-6">
             {[1, 2, 3].map((i) => (
               <motion.div
                 key={i}
-                className="w-48 h-64 bg-[rgba(46,204,113,0.1)] rounded-3xl"
+                className="w-[220px] h-[280px] bg-gray-800/50 rounded-2xl"
                 animate={{ opacity: [0.3, 0.6, 0.3] }}
                 transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
               />
             ))}
           </div>
         ) : (
-          <div className="flex justify-center items-end gap-4 md:gap-8 flex-wrap">
-            {topContributors[1] && (
-              <TopContributorCard
-                contributor={topContributors[1]}
-                rank={2}
-                delay={0.4}
-              />
-            )}
-            
+          <div className="flex justify-center items-center gap-6 flex-wrap">
+            {/* 1st Place - Left */}
             {topContributors[0] && (
-              <TopContributorCard
-                contributor={topContributors[0]}
-                rank={1}
-                delay={0.2}
-              />
+              <div className="order-1">
+                <TopContributorCard
+                  contributor={topContributors[0]}
+                  rank={1}
+                  delay={0.1}
+                />
+              </div>
             )}
             
+            {/* 2nd Place - Center */}
+            {topContributors[1] && (
+              <div className="order-2">
+                <TopContributorCard
+                  contributor={topContributors[1]}
+                  rank={2}
+                  delay={0.3}
+                />
+              </div>
+            )}
+            
+            {/* 3rd Place - Right */}
             {topContributors[2] && (
-              <TopContributorCard
-                contributor={topContributors[2]}
-                rank={3}
-                delay={0.6}
-              />
+              <div className="order-3">
+                <TopContributorCard
+                  contributor={topContributors[2]}
+                  rank={3}
+                  delay={0.5}
+                />
+              </div>
             )}
           </div>
         )}
