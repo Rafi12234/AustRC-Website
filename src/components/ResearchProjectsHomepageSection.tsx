@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { Button } from './ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface ResearchProject {
   id: string;
@@ -74,43 +75,12 @@ const GridBackground = () => {
   );
 };
 
-// 3D Tilt Card Component
+// Simple Card Wrapper Component (removed 3D tilt effect)
 const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const rotateX = useTransform(y, [-100, 100], [10, -10]);
-  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
-
-  const handleMouse = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      onMouseMove={handleMouse}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: 'preserve-3d',
-      }}
-    >
+    <div className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -301,6 +271,7 @@ const ProjectCard = ({
 
 // Main Component
 export function ResearchProjectsHomepageSection() {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<ResearchProject | null>(null);
@@ -413,8 +384,8 @@ export function ResearchProjectsHomepageSection() {
         <FloatingParticles />
 
         {/* Decorative Elements */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-[#2ECC71]/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#2ECC71]/10 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
+        <div className="absolute -top-48 -left-48 w-96 h-96 bg-[#2ECC71]/10 rounded-full blur-[120px]" />
+        <div className="absolute -bottom-48 -right-48 w-96 h-96 bg-[#2ECC71]/10 rounded-full blur-[120px]" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Header Section */}
@@ -542,25 +513,27 @@ export function ResearchProjectsHomepageSection() {
             className="flex justify-center mt-12 sm:mt-16"
           >
             <motion.button
-              whileHover={{ scale: 1.02, y: -3 }}
-              whileTap={{ scale: 0.98 }}
-              className="group relative px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-white font-semibold text-sm sm:text-base shadow-lg shadow-[#2ECC71]/30 overflow-hidden"
+              onClick={() => navigate('/research-projects')}
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.97 }}
+              className="relative px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-white font-bold text-base transition-all duration-300 shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] overflow-hidden group"
             >
               {/* Shine Effect */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
-                initial={{ x: '-200%' }}
-                whileHover={{ x: '200%' }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+                initial={{ x: '-150%' }}
+                whileHover={{ x: '150%' }}
                 transition={{ duration: 0.8 }}
               />
 
-              <span className="relative flex items-center gap-3">
+              <span className="relative inline-flex items-center gap-3">
+                <ChevronRight className="w-5 h-5" />
                 Explore All Projects
                 <motion.span
-                  className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/20"
-                  whileHover={{ x: 3 }}
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-5 h-5" />
                 </motion.span>
               </span>
             </motion.button>

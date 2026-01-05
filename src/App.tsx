@@ -26,7 +26,7 @@ function AppContent() {
   const isAboutPage = location.pathname === '/about';
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black overflow-x-hidden">
       <CursorGlow />
       <Navbar />
       <Routes>

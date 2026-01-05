@@ -45,7 +45,7 @@ export function HeroSection() {
   const rotatingWords = ["Safer Future", "Innovation", "Tomorrow", "Excellence"];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black w-full max-w-full">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
@@ -63,9 +63,9 @@ export function HeroSection() {
       </div>
 
       {/* Neon Gradient Orbs */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-30 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-10 w-96 h-96 bg-[#2ECC71] rounded-full blur-[120px]"
+          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full blur-[120px]"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -77,7 +77,7 @@ export function HeroSection() {
           }}
         />
         <motion.div
-          className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-[#27AE60] rounded-full blur-[120px]"
+          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full blur-[120px]"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.5, 0.3, 0.5],
@@ -202,13 +202,7 @@ export function HeroSection() {
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Button
-                variant="outline"
-                className="relative bg-white border-[rgba(46,204,113,0.5)] text-[#2ECC71] hover:bg-[#2ECC71]/10 px-8 py-6 text-base transition-all hover:shadow-[0_0_30px_0_rgba(46,204,113,0.5)] group overflow-hidden"
-              >
-                <Cpu className="w-5 h-5 mr-2 group-hover:rotate-180 transition-transform duration-500" />
-                View Projects
-              </Button>
+             
             </motion.div>
           </motion.div>
 
