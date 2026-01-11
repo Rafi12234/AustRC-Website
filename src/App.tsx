@@ -9,6 +9,7 @@ import { ProjectDetailPage } from './components/ProjectDetailPage';
 import { AboutPage } from './components/AboutPage';
 import { EnthusiastAcquisitionPage } from './components/EnthusiastAcquisitionPage';
 import { DevelopersPage } from './components/DevelopersPage';
+import { AppDownloadPage } from './components/AppDownloadPage';
 import { Footer } from './components/Footer';
 import { CursorGlow } from './components/CursorGlow';
 
@@ -27,7 +28,7 @@ function AppContent() {
   const isAboutPage = location.pathname === '/about';
 
   return (
-    <div className="min-h-screen bg-black overflow-x-hidden">
+    <div className="relative min-h-screen bg-black overflow-x-hidden">
       <CursorGlow />
       <Navbar />
       <Routes>
@@ -56,6 +57,7 @@ function AppContent() {
         <Route path="/governing-panel/spring-2022" element={<GoverningPanelSemester semester="Spring" year="2022" />} />
         <Route path="/governing-panel/fall-2021" element={<GoverningPanelSemester semester="Fall" year="2021" />} />
         <Route path="/developers" element={<DevelopersPage />} />
+        <Route path="/get-app" element={<AppDownloadPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {!isAboutPage && <Footer theme="dark" />}
