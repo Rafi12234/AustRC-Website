@@ -213,8 +213,55 @@ export function GoverningPanelPage() {
 
     return (
         <>
-            <div className="min-h-screen bg-gradient-to-b from-black via-[#0a1810] to-black pt-32 pb-20">
-                <div className="container mx-auto px-4">
+            <div className="min-h-screen relative overflow-hidden bg-black pt-32 pb-20">
+                {/* Animated Gradient Background - Same as HeroSection */}
+                <div className="absolute inset-0">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+                    <motion.div
+                        className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-transparent to-[rgba(46,204,113,0.15)]"
+                        style={{ filter: 'blur(64px)' }}
+                        animate={{
+                            opacity: [0.3, 0.5, 0.3],
+                        }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                </div>
+
+                {/* Neon Gradient Orbs - Hidden on mobile for performance */}
+                <div className="hidden lg:block absolute inset-0 opacity-30 overflow-hidden pointer-events-none">
+                    <motion.div
+                        className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full"
+                        style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
+                        animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.3, 0.5, 0.3],
+                        }}
+                        transition={{
+                            duration: 5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                    <motion.div
+                        className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full"
+                        style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
+                        animate={{
+                            scale: [1.2, 1, 1.2],
+                            opacity: [0.5, 0.3, 0.5],
+                        }}
+                        transition={{
+                            duration: 6,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                </div>
+
+                <div className="container mx-auto px-4 relative z-10">
                     {/* Header */}
                     <motion.div
                         key={panelId} // Re-animate on route change

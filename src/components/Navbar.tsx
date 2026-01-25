@@ -10,6 +10,8 @@ import {
   ExternalLink,
   ChevronRight
 } from 'lucide-react';
+import { db } from '@/config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,6 +21,8 @@ export function Navbar() {
   const [mobileActivitiesOpen, setMobileActivitiesOpen] = useState(false);
   const [mobileGoverningOpen, setMobileGoverningOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [governingPanelDropdownItems, setGoverningPanelDropdownItems] = useState<{name: string; path: string}[]>([]);
+  const [loadingSemesters, setLoadingSemesters] = useState(true);
 
   const location = useLocation();
 
@@ -79,18 +83,62 @@ export function Navbar() {
     { name: 'Our Event Website', path: '/activities/event-website' },
   ];
 
-  const governingPanelDropdownItems = [
-    { name: 'Hall of Fame', path: '/governing-panel/hall-of-fame' },
-    { name: 'Spring 2025', path: '/governing-panel/spring-2025' },
-    { name: 'Fall 2025', path: '/governing-panel/fall-2025' },
-    { name: 'Fall 2024', path: '/governing-panel/fall-2024' },
-    { name: 'Spring 2024', path: '/governing-panel/spring-2024' },
-    { name: 'Fall 2023', path: '/governing-panel/fall-2023' },
-    { name: 'Spring 2023', path: '/governing-panel/spring-2023' },
-    { name: 'Fall 2022', path: '/governing-panel/fall-2022' },
-    { name: 'Spring 2022', path: '/governing-panel/spring-2022' },
-    { name: 'Fall 2021', path: '/governing-panel/fall-2021' },
-  ];
+  // Fetch semesters from Firebase
+  useEffect(() => {
+    const fetchSemesters = async () => {
+      try {
+        setLoadingSemesters(true);
+        const semestersRef = collection(db, 'All_Data', 'Governing_Panel', 'Semesters');
+        const snapshot = await getDocs(semestersRef);
+        
+        const semesters = snapshot.docs.map(doc => {
+          const semesterName = doc.id;
+          // Convert semester name to URL-friendly path (e.g., "Fall 2024" -> "fall-2024")
+          const pathName = semesterName.toLowerCase().replace(/\s+/g, '-');
+          return {
+            name: semesterName,
+            path: `/governing-panel/${pathName}`
+          };
+        });
+
+        // Sort semesters: Hall of Fame first, then by year (descending) and season (Fall before Spring)
+        const sortedSemesters = semesters.sort((a, b) => {
+          if (a.name === 'Hall of Fame') return -1;
+          if (b.name === 'Hall of Fame') return 1;
+          
+          const extractYearAndSeason = (name: string) => {
+            const match = name.match(/(Fall|Spring)\s+(\d{4})/);
+            if (match) {
+              // Fall = 1, Spring = 0 (so Fall comes first within same year)
+              const seasonOrder = match[1] === 'Fall' ? 1 : 0;
+              return { season: seasonOrder, year: parseInt(match[2]) };
+            }
+            return { season: -1, year: 0 };
+          };
+          
+          const aInfo = extractYearAndSeason(a.name);
+          const bInfo = extractYearAndSeason(b.name);
+          
+          // Sort by year descending first
+          if (bInfo.year !== aInfo.year) return bInfo.year - aInfo.year;
+          // For same year, Fall (1) comes before Spring (0), so descending order
+          return bInfo.season - aInfo.season;
+        });
+
+        setGoverningPanelDropdownItems(sortedSemesters);
+      } catch (error) {
+        console.error('Error fetching semesters:', error);
+        // Fallback to default items if Firebase fetch fails
+        setGoverningPanelDropdownItems([
+          { name: 'Hall of Fame', path: '/governing-panel/hall-of-fame' },
+        ]);
+      } finally {
+        setLoadingSemesters(false);
+      }
+    };
+
+    fetchSemesters();
+  }, []);
 
   const handleNavClick = (item: typeof navItems[0]) => {
     if (item.section && location.pathname === '/') {
@@ -208,12 +256,14 @@ export function Navbar() {
                 ) : item.name === 'Governing Panel' ? (
                   <div
                     key={item.name}
-                    className="relative text-gray-400 hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    className="relative text-gray-400 hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap cursor-pointer"
                     onMouseEnter={() => setGoverningPanelOpen(true)}
                     onMouseLeave={() => setGoverningPanelOpen(false)}
                   >
-                    {item.name}
-                    <ChevronDown className="inline-block w-4 h-4 ml-1" />
+                    <button className="flex items-center gap-1 focus:outline-none">
+                      {item.name}
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
                     <AnimatePresence>
                       {governingPanelOpen && (
                         <motion.div
@@ -223,15 +273,21 @@ export function Navbar() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
-                          {governingPanelDropdownItems.map((dropdownItem) => (
-                            <Link
-                              key={dropdownItem.name}
-                              to={dropdownItem.path}
-                              className="block px-4 py-2 text-gray-400 hover:text-[#2ECC71] transition-all"
-                            >
-                              {dropdownItem.name}
-                            </Link>
-                          ))}
+                          {loadingSemesters ? (
+                            <div className="px-4 py-3 text-gray-400 text-sm">Loading...</div>
+                          ) : governingPanelDropdownItems.length === 0 ? (
+                            <div className="px-4 py-3 text-gray-400 text-sm">No semesters found</div>
+                          ) : (
+                            governingPanelDropdownItems.map((dropdownItem) => (
+                              <Link
+                                key={dropdownItem.name}
+                                to={dropdownItem.path}
+                                className="block px-4 py-2 text-gray-400 hover:text-[#2ECC71] hover:bg-[rgba(46,204,113,0.1)] transition-all"
+                              >
+                                {dropdownItem.name}
+                              </Link>
+                            ))
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -451,26 +507,32 @@ export function Navbar() {
                             exit="closed"
                             className="overflow-hidden bg-white/5 rounded-xl mb-3 mx-2 max-h-60 overflow-y-auto"
                           >
-                            {governingPanelDropdownItems.map((dropdownItem, dropIndex) => (
-                              <motion.div
-                                key={dropdownItem.name}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{
-                                  opacity: 1,
-                                  x: 0,
-                                  transition: { delay: dropIndex * 0.03 },
-                                }}
-                              >
-                                <Link
-                                  to={dropdownItem.path}
-                                  className="flex items-center gap-2 py-3 px-4 text-gray-400 hover:text-[#2ECC71] transition-colors text-sm"
-                                  onClick={() => setMobileMenuOpen(false)}
+                            {loadingSemesters ? (
+                              <div className="py-3 px-4 text-gray-400 text-sm">Loading...</div>
+                            ) : governingPanelDropdownItems.length === 0 ? (
+                              <div className="py-3 px-4 text-gray-400 text-sm">No semesters found</div>
+                            ) : (
+                              governingPanelDropdownItems.map((dropdownItem, dropIndex) => (
+                                <motion.div
+                                  key={dropdownItem.name}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: { delay: dropIndex * 0.03 },
+                                  }}
                                 >
-                                  <ChevronRight className="w-4 h-4 text-[#2ECC71]/50" />
-                                  {dropdownItem.name}
-                                </Link>
-                              </motion.div>
-                            ))}
+                                  <Link
+                                    to={dropdownItem.path}
+                                    className="flex items-center gap-2 py-3 px-4 text-gray-400 hover:text-[#2ECC71] transition-colors text-sm"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                  >
+                                    <ChevronRight className="w-4 h-4 text-[#2ECC71]/50" />
+                                    {dropdownItem.name}
+                                  </Link>
+                                </motion.div>
+                              ))
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>
