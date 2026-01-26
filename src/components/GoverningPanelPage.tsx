@@ -24,6 +24,11 @@ interface Person {
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400";
 
+// helper (keeps your “remove Unknown” logic readable)
+function isUnknown(memberName: string) {
+  return memberName === "Unknown";
+}
+
 export function GoverningPanelPage() {
   const { panelId } = useParams<{ panelId: string }>();
 
@@ -46,7 +51,7 @@ export function GoverningPanelPage() {
   const [loading, setLoading] = useState(true);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
-  // ✅ Lock body scroll when modal open (prevents background scroll + some stacking weirdness)
+  // ✅ lock background scroll when modal open
   useEffect(() => {
     if (!selectedPerson) return;
     const prevOverflow = document.body.style.overflow;
@@ -56,7 +61,7 @@ export function GoverningPanelPage() {
     };
   }, [selectedPerson]);
 
-  // ✅ Close on ESC
+  // ✅ close on ESC
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedPerson(null);
@@ -101,6 +106,7 @@ export function GoverningPanelPage() {
           });
         } else {
           const collectionName = getCollectionName(panelId);
+
           const subcollections = [
             { id: "Advisory_Panel", title: "Advisory Panel" },
             { id: "Executive_Panel", title: "Executive Panel" },
@@ -129,6 +135,7 @@ export function GoverningPanelPage() {
                   collectionName,
                   sub.id
                 );
+
                 const q = query(membersRef);
                 const snapshot = await getDocs(q);
 
@@ -137,18 +144,21 @@ export function GoverningPanelPage() {
                   const keys = Object.keys(data);
                   const imageKeys = keys.filter((k) => k.startsWith("Image_"));
 
-                  // Non-standard structure: single doc with Image_1, Image_2, ...
+                  // ✅ non-standard structure (single doc with Image_1, Image_2, ...)
                   if (imageKeys.length > 0 && !data.Name && !data.name) {
                     imageKeys.forEach((imgKey) => {
                       const index = imgKey.split("_")[1];
                       if (!index) return;
 
+                      const name =
+                        data[`Name_${index}`] ||
+                        data[`name_${index}`] ||
+                        `${sub.title} Member`;
+
+                      // you can keep/remove these “generic” entries as you wish
                       fetchedMembers.push({
                         id: `${doc.id}_${index}`,
-                        name:
-                          data[`Name_${index}`] ||
-                          data[`name_${index}`] ||
-                          `${sub.title} Member`,
+                        name,
                         title:
                           data[`Title_${index}`] ||
                           data[`Designation_${index}`] ||
@@ -158,7 +168,7 @@ export function GoverningPanelPage() {
                         linkedin: data[`Linkedin_${index}`],
                         github: data[`Github_${index}`],
                         email: data[`Email_${index}`],
-                        order: parseInt(index, 10),
+                        order: parseInt(index, 10) || 999,
                         category: sub.title,
                         isGeneric: !data[`Name_${index}`],
                       });
@@ -166,9 +176,9 @@ export function GoverningPanelPage() {
                     return;
                   }
 
-                  // Standard structure
+                  // ✅ standard structure
                   const memberName = data.Name || data.name || "Unknown";
-                  if (ShowUnknown(memberName)) return; // remove Unknown (as you wanted)
+                  if (isUnknown(memberName)) return;
 
                   fetchedMembers.push({
                     id: doc.id,
@@ -191,7 +201,7 @@ export function GoverningPanelPage() {
           );
         }
 
-        // Sorting
+        // ✅ sorting
         const categoryOrder: Record<string, number> = {
           "Advisory Panel": 0,
           "Executive Panel": 1,
@@ -222,7 +232,6 @@ export function GoverningPanelPage() {
     fetchMembers();
   }, [panelId]);
 
-  // ✅ Keep original behavior but also support mailto:
   const SocialIcon = ({
     href,
     icon: Icon,
@@ -237,9 +246,7 @@ export function GoverningPanelPage() {
     if (!href) return null;
 
     const finalHref =
-      forceMailto && !href.startsWith("mailto:")
-        ? `mailto:${href}`
-        : href;
+      forceMailto && !href.startsWith("mailto:") ? `mailto:${href}` : href;
 
     return (
       <motion.a
@@ -257,7 +264,7 @@ export function GoverningPanelPage() {
     );
   };
 
-  // Group members memoized
+  // ✅ group members for UI
   const grouped = useMemo(() => {
     const groupedMembers = members.reduce((acc, member) => {
       const cat = member.category || "Other";
@@ -355,7 +362,9 @@ export function GoverningPanelPage() {
             </div>
           ) : members.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-400">No members found for this section yet.</p>
+              <p className="text-gray-400">
+                No members found for this section yet.
+              </p>
             </div>
           ) : (
             grouped.sortedCategories.map((category) => (
@@ -380,30 +389,51 @@ export function GoverningPanelPage() {
                       transition={{ duration: 0.5, delay: index * 0.05 }}
                       onClick={() => setSelectedPerson(member)}
                     >
-                      <Card className="relative group overflow-hidden bg-gradient-to-br from-black/90 via-[#0a1810]/90 to-black/90 border-[#2ECC71]/20 hover:border-[#2ECC71]/50 backdrop-blur-xl transition-all duration-500 hover:shadow-[0_0_60px_0_rgba(46,204,113,0.3)] cursor-pointer h-full flex flex-col">
+                      {/* ✅ min height to keep cards uniform */}
+                      <Card className="relative group overflow-hidden bg-gradient-to-br from-black/90 via-[#0a1810]/90 to-black/90 border-[#2ECC71]/20 hover:border-[#2ECC71]/50 backdrop-blur-xl transition-all duration-500 hover:shadow-[0_0_60px_0_rgba(46,204,113,0.3)] cursor-pointer min-h-[560px] h-full flex flex-col">
+                        {/* Glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#2ECC71]/5 via-transparent to-[#27AE60]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative h-64 overflow-hidden">
+                        {/* ✅ FULL IMAGE SHOWING (no cropping) */}
+                        <div className="relative h-80 md:h-96 overflow-hidden bg-black">
                           <motion.img
                             src={member.image}
                             alt={member.name}
-                            className="w-full h-full object-cover"
-                            whileHover={{ scale: 1.05 }}
+                            className="w-full h-full object-contain object-center"
+                            whileHover={{ scale: 1.03 }}
                             transition={{ duration: 0.5 }}
+                            loading="lazy"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                          {/* optional overlay for style */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
                         </div>
 
+                        {/* Content */}
                         <div className="relative p-6 space-y-4 flex-1 flex flex-col justify-between">
                           <div>
-                            <h3 className="text-2xl text-white mb-2">{member.name}</h3>
+                            <h3 className="text-2xl text-white mb-2">
+                              {member.name}
+                            </h3>
                             <p className="text-[#2ECC71]">{member.title}</p>
                           </div>
 
+                          {/* Social */}
                           <div className="flex gap-3 pt-4 border-t border-[#2ECC71]/20">
-                            <SocialIcon href={member.facebook} icon={Facebook} label="Facebook" />
-                            <SocialIcon href={member.linkedin} icon={Linkedin} label="LinkedIn" />
-                            <SocialIcon href={member.github} icon={Github} label="GitHub" />
+                            <SocialIcon
+                              href={member.facebook}
+                              icon={Facebook}
+                              label="Facebook"
+                            />
+                            <SocialIcon
+                              href={member.linkedin}
+                              icon={Linkedin}
+                              label="LinkedIn"
+                            />
+                            <SocialIcon
+                              href={member.github}
+                              icon={Github}
+                              label="GitHub"
+                            />
                             <SocialIcon
                               href={member.email}
                               icon={Mail}
@@ -413,6 +443,7 @@ export function GoverningPanelPage() {
                           </div>
                         </div>
 
+                        {/* Hover Border */}
                         <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                           <div className="absolute inset-0 rounded-lg shadow-[inset_0_0_30px_0_rgba(46,204,113,0.2)]" />
                         </div>
@@ -426,13 +457,12 @@ export function GoverningPanelPage() {
         </div>
       </div>
 
-      {/* ✅ FIXED MODAL (always on top) */}
+      {/* ✅ MODAL (always on top) */}
       {createPortal(
         <AnimatePresence>
           {selectedPerson && (
             <div
               className="fixed inset-0"
-              // IMPORTANT: inline zIndex so no Tailwind/safelisting issues
               style={{ zIndex: 2147483647 }}
               role="dialog"
               aria-modal="true"
@@ -447,7 +477,7 @@ export function GoverningPanelPage() {
                 onClick={() => setSelectedPerson(null)}
               />
 
-              {/* Modal container */}
+              {/* Content wrapper */}
               <motion.div
                 key="modal-content"
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -470,11 +500,11 @@ export function GoverningPanelPage() {
                   </button>
 
                   {/* Image */}
-                  <div className="w-full md:w-1/2 h-64 md:h-auto relative">
+                  <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-black">
                     <img
                       src={selectedPerson.image}
                       alt={selectedPerson.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain object-center"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a1810] via-transparent to-transparent md:bg-gradient-to-r" />
                   </div>
@@ -489,7 +519,9 @@ export function GoverningPanelPage() {
                     </h3>
 
                     <div className="space-y-4 text-gray-300 mb-8">
-                      {selectedPerson.Description && <p>{selectedPerson.Description}</p>}
+                      {selectedPerson.Description && (
+                        <p>{selectedPerson.Description}</p>
+                      )}
                       {selectedPerson.Department && (
                         <p>
                           <span className="text-[#2ECC71]/70">Department:</span>{" "}
@@ -537,9 +569,4 @@ export function GoverningPanelPage() {
       )}
     </>
   );
-}
-
-// helper (keeps your “remove Unknown” logic readable)
-function ShowUnknown(memberName: string) {
-  return memberName === "Unknown";
 }
