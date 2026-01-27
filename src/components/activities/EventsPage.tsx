@@ -25,79 +25,101 @@ interface Event {
   headlines: Headline[];
 }
 
-// Premium Animated Background
-const PremiumBackground = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    {/* Base Grid Pattern */}
-    <div 
-      className="absolute inset-0 opacity-[0.03]"
-      style={{
-        backgroundImage: `
-          linear-gradient(rgba(46,204,113,0.5) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(46,204,113,0.5) 1px, transparent 1px)
-        `,
-        backgroundSize: '60px 60px',
-      }}
-    />
-    
-    {/* Radial Gradient Overlay */}
-    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
-    
-    {/* Animated Gradient Orbs */}
-    <motion.div
-      className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full"
-      style={{
-        background: 'radial-gradient(circle, rgba(46,204,113,0.08) 0%, transparent 70%)',
-      }}
-      animate={{
-        scale: [1, 1.2, 1],
-        opacity: [0.5, 0.8, 0.5],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-    />
-    <motion.div
-      className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full"
-      style={{
-        background: 'radial-gradient(circle, rgba(39,174,96,0.06) 0%, transparent 70%)',
-      }}
-      animate={{
-        scale: [1.2, 1, 1.2],
-        opacity: [0.3, 0.6, 0.3],
-      }}
-      transition={{
-        duration: 10,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-    />
+// Hero Background (same as HomePage HeroSection)
+const HeroBackground = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    {/* Floating Particles */}
-    {[...Array(20)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute w-1 h-1 bg-[#2ECC71]/30 rounded-full"
+  return (
+    <>
+      {/* Animated Gradient Background - Simplified for mobile */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+        {/* Only animate on desktop */}
+        {!isMobile ? (
+          <motion.div
+            className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-transparent to-[rgba(46,204,113,0.15)]"
+            style={{ filter: 'blur(64px)' }}
+            animate={{
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ) : (
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] opacity-30" style={{ filter: 'blur(40px)' }} />
+        )}
+      </div>
+
+      {/* Neon Gradient Orbs - Hidden on mobile for performance */}
+      <div className="hidden lg:block absolute inset-0 opacity-30 overflow-hidden">
+        <motion.div
+          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full"
+          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full"
+          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.5, 0.3, 0.5],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full"
+          style={{ filter: 'blur(80px)', transform: 'translateZ(0)' }}
+          animate={{
+            rotate: [0, 360],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+      
+      {/* Static gradient for mobile */}
+      <div className="lg:hidden absolute inset-0 opacity-20 overflow-hidden">
+        <div className="absolute top-20 -left-20 w-64 h-64 bg-[#2ECC71] rounded-full" style={{ filter: 'blur(60px)' }} />
+        <div className="absolute bottom-20 -right-20 w-72 h-72 bg-[#27AE60] rounded-full" style={{ filter: 'blur(60px)' }} />
+      </div>
+
+      {/* Grid Pattern Overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
         style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-        }}
-        animate={{
-          y: [-20, 20, -20],
-          opacity: [0.2, 0.6, 0.2],
-        }}
-        transition={{
-          duration: 3 + Math.random() * 4,
-          repeat: Infinity,
-          delay: Math.random() * 2,
-          ease: 'easeInOut',
+          backgroundImage: `linear-gradient(rgba(46,204,113,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(46,204,113,0.5) 1px, transparent 1px)`,
+          backgroundSize: "50px 50px",
         }}
       />
-    ))}
-  </div>
-);
+    </>
+  );
+};
 
 // Page Header
 const PageHeader = () => (
@@ -832,11 +854,7 @@ export function EventsPage() {
   return (
     <div className="min-h-screen bg-black text-white pt-24 pb-12 relative overflow-hidden">
       {/* Background */}
-      <PremiumBackground />
-
-      {/* Ambient Glow Effects */}
-      <div className="absolute -top-64 -left-64 w-[500px] h-[500px] bg-[#2ECC71]/5 rounded-full blur-[150px]" />
-      <div className="absolute -bottom-48 -right-48 w-[400px] h-[400px] bg-[#27AE60]/5 rounded-full blur-[120px]" />
+      <HeroBackground />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Page Header */}
