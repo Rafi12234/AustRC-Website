@@ -596,7 +596,7 @@ export function ResearchProjectsHomepageSection() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="fixed inset-0 flex items-start justify-center overflow-y-auto py-6 sm:py-10 lg:py-16 px-4 sm:px-6 lg:px-8"
+              className="fixed inset-0 flex items-center justify-center overflow-y-auto py-6 sm:py-10 lg:py-16 px-4 sm:px-6 lg:px-8"
               style={{
                 zIndex: 100000,
                 WebkitOverflowScrolling: 'touch',
@@ -695,7 +695,7 @@ export function ResearchProjectsHomepageSection() {
                   </div>
 
                   {/* Content Body */}
-                  <div className="p-5 sm:p-8 lg:p-10 space-y-6 sm:space-y-8">
+                  <div className="p-6 sm:p-10 lg:p-12 space-y-7 sm:space-y-10">
                     {/* About Section */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -708,8 +708,8 @@ export function ResearchProjectsHomepageSection() {
                           About This Project
                         </h3>
                       </div>
-                      <div className="bg-white/[0.03] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-7 border border-[#2ECC71]/10 backdrop-blur-sm">
-                        <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
+                      <div className="bg-white/[0.03] rounded-xl sm:rounded-2xl p-6 sm:p-7 lg:p-8 border border-[#2ECC71]/10 backdrop-blur-sm">
+                        <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-[1.8] whitespace-pre-wrap">
                           {selectedProject.Introduction}
                         </p>
                       </div>
@@ -761,11 +761,11 @@ export function ResearchProjectsHomepageSection() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.8 }}
-                      className="flex gap-3 pt-4 border-t border-[#2ECC71]/10"
+                      className="flex gap-3 pt-6 sm:pt-8 mt-2 border-t border-[#2ECC71]/10"
                     >
                       <Button
                         onClick={() => setSelectedProject(null)}
-                        className="flex-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] hover:from-[#27AE60] hover:to-[#2ECC71] text-black font-bold h-12 sm:h-13 rounded-xl text-sm sm:text-base shadow-lg shadow-[#2ECC71]/20 transition-all"
+                        className="flex-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] hover:from-[#27AE60] hover:to-[#2ECC71] text-black font-bold h-12 sm:h-14 rounded-xl text-sm sm:text-base shadow-lg shadow-[#2ECC71]/20 transition-all"
                       >
                         <span>Close</span>
                       </Button>
