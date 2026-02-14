@@ -137,12 +137,9 @@ export function Footer({ theme = 'dark' }: FooterProps) {
                 </li>
                 <li className={`flex items-center gap-3 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                   <Mail className="w-5 h-5 text-[#2ECC71] shrink-0" />
-                  <span>contact@ausrc.edu</span>
+                  <span>austrc@aust.edu</span>
                 </li>
-                <li className={`flex items-center gap-3 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <Phone className="w-5 h-5 text-[#2ECC71] shrink-0" />
-                  <span>+880 123 456 7890</span>
-                </li>
+                
               </ul>
             </motion.div>
           </div>
