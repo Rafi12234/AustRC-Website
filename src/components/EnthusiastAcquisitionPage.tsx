@@ -45,7 +45,7 @@ function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
   return (
     <div className="review-card bg-gray-900/50 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-5 flex flex-col gap-4 hover:border-[#2ECC71]/55 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.2)] transition-all duration-300">
       {/* Reviewer info */}
-      <div className="flex items-start gap-3">
+      <div className="flex items-center gap-3">
         {item.photo ? (
           <div className="w-12 h-12 aspect-square rounded-full overflow-hidden border border-[#2ECC71]/35 flex-shrink-0 shadow-[0_0_18px_0_rgba(46,204,113,0.28)]">
             <img
@@ -68,7 +68,7 @@ function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
       </div>
 
       {/* Experience text */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col justify-center min-h-[104px]">
         <p
           ref={textRef}
           className={`review-text text-gray-300 text-base leading-relaxed ${isExpanded ? 'expanded' : ''}`}
@@ -78,7 +78,7 @@ function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
         {isTruncatable && (
           <button
             onClick={() => onToggle(cardKey)}
-            className="text-[#2ECC71] text-xs mt-2 hover:underline focus:outline-none text-left"
+            className="text-[#2ECC71] text-xs mt-3 hover:underline focus:outline-none text-left self-start"
           >
             {isExpanded ? 'See less' : 'See more'}
           </button>
@@ -128,10 +128,9 @@ export function EnthusiastAcquisitionPage() {
     return () => unsubscribe();
   }, []);
 
-  // Split reviews into two rows for the marquee
   const midpoint = Math.ceil(reviews.length / 2);
-  const row1Reviews = reviews.slice(0, midpoint);
-  const row2Reviews = reviews.slice(midpoint);
+  const upperRowReviews = reviews.slice(0, midpoint);
+  const lowerRowReviews = reviews.slice(midpoint);
 
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
@@ -358,23 +357,25 @@ export function EnthusiastAcquisitionPage() {
       </section>
 
       {/* Panel Member Reviews Section */}
-      <section className="py-24 px-6 relative overflow-hidden">
+      <section className="my-16 px-6 md:px-8 lg:px-12 relative overflow-hidden">
         <style>{`
-          @keyframes lane-right {
+          @keyframes lane-move-right {
             0% { transform: translateX(-50%); }
             100% { transform: translateX(0%); }
           }
 
-          @keyframes lane-left {
+          @keyframes lane-move-left {
             0% { transform: translateX(0%); }
             100% { transform: translateX(-50%); }
           }
 
           .review-card {
-            width: 365px;
-            min-height: 160px;
-            flex: 0 0 auto;
-            margin: 1rem;
+            width: 360px;
+            min-height: 220px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
           }
 
           .review-text {
@@ -393,32 +394,34 @@ export function EnthusiastAcquisitionPage() {
             min-height: 0;
           }
 
+          .review-grid-wrap {
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+
           .review-lane {
             overflow: hidden;
-            padding: 0.25rem 0;
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
           }
 
           .review-track {
             display: flex;
+            align-items: stretch;
             gap: 1.5rem;
             width: max-content;
-            align-items: stretch;
           }
 
           .review-track-upper {
-            animation: lane-right 22s linear infinite;
+            animation: lane-move-right 20s linear infinite;
           }
 
           .review-track-lower {
-            animation: lane-left 22s linear infinite;
-          }
-
-          .review-grid-wrap {
-            max-width: 100%;
-            margin-left: auto;
-            margin-right: auto;
+            animation: lane-move-left 20s linear infinite;
           }
 
           .review-lane:hover .review-track-upper,
@@ -426,21 +429,10 @@ export function EnthusiastAcquisitionPage() {
             animation-play-state: paused;
           }
 
-          @media (max-width: 1023px) {
+          @media (max-width: 767px) {
             .review-card {
-              width: 320px;
-              min-height: 170px;
-            }
-
-            .review-track-upper,
-            .review-track-lower {
-              animation-duration: 18s;
-            }
-          }
-
-          @media (max-width: 640px) {
-            .review-card {
-              width: 280px;
+              width: 300px;
+              min-height: 205px;
             }
           }
         `}</style>
@@ -474,18 +466,22 @@ export function EnthusiastAcquisitionPage() {
 
           {reviews.length === 0 ? (
             /* Empty / loading state */
-            <div className="flex gap-6 justify-center flex-wrap">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="review-card h-44 rounded-2xl bg-gray-800/40 border border-[#2ECC71]/10 animate-pulse" />
-              ))}
+            <div className="review-grid-wrap">
+              <div className="review-lane">
+                <div className="review-track">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="review-card rounded-2xl bg-gray-800/40 border border-[#2ECC71]/10 animate-pulse" />
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
-            <div className="review-grid-wrap space-y-6 md:space-y-8">
-              {row1Reviews.length > 0 && (
+            <div className="review-grid-wrap">
+              {upperRowReviews.length > 0 && (
                 <div className="review-lane">
                   <div className="review-track review-track-upper">
-                    {[...row1Reviews, ...row1Reviews].map((item, i) => {
-                      const cardKey = `row1-${item.id}-${i}`;
+                    {[...upperRowReviews, ...upperRowReviews].map((item, i) => {
+                      const cardKey = `upper-${item.id}-${i}`;
                       const isExpanded = expandedCards.has(cardKey);
                       return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
                     })}
@@ -493,11 +489,11 @@ export function EnthusiastAcquisitionPage() {
                 </div>
               )}
 
-              {row2Reviews.length > 0 && (
+              {lowerRowReviews.length > 0 && (
                 <div className="review-lane">
                   <div className="review-track review-track-lower">
-                    {[...row2Reviews, ...row2Reviews].map((item, i) => {
-                      const cardKey = `row2-${item.id}-${i}`;
+                    {[...lowerRowReviews, ...lowerRowReviews].map((item, i) => {
+                      const cardKey = `lower-${item.id}-${i}`;
                       const isExpanded = expandedCards.has(cardKey);
                       return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
                     })}
