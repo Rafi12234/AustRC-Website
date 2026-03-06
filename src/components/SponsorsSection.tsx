@@ -111,7 +111,7 @@ export function SponsorsSection() {
           <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-4">
             <span className="text-[#2ECC71] text-sm">Our Partners</span>
           </div>
-          <h2 className="mb-4 tracking-tight text-white text-5xl">Our Collaborated Sponsors</h2>
+          <h2 className="mb-4 tracking-tight text-white text-3xl sm:text-4xl md:text-5xl">Our Collaborated Sponsors</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Grateful for the support of our valued sponsors who make our initiatives possible.
           </p>
