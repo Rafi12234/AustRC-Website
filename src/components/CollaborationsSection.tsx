@@ -111,7 +111,7 @@ export function CollaborationsSection() {
           <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-4">
             <span className="text-[#2ECC71] text-sm">Partners & Sponsors</span>
           </div>
-          <h2 className="mb-4 tracking-tight text-white text-5xl">Event Collaborations</h2>
+          <h2 className="mb-4 tracking-tight text-white text-3xl sm:text-4xl md:text-5xl">Event Collaborations</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Proud to collaborate with leading institutions, industry partners, and innovation hubs.
           </p>
