@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useInView, useSpring } from "motion/react";
 
-// â”€â”€ FONT LOADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── FONT LOADER ───────────────────────────────────────────────────────────────
 function useFonts() {
   useEffect(() => {
     const link = document.createElement("link");
@@ -12,7 +12,7 @@ function useFonts() {
   }, []);
 }
 
-// â”€â”€ DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DATA ──────────────────────────────────────────────────────────────────────
 const milestones = [
   {
     id: "origin",
@@ -21,7 +21,7 @@ const milestones = [
     side: "right",
     title: "Rakib Takes the Initiative",
     description:
-      "Rakib became the pioneer of AUST Robotics Club's digital presence. He independently took the initiative to build the club's very first website from scratch â€” designing the main backbone architecture and creating several key pages. This was a landmark breakthrough: for the first time, the club had a digital home.",
+      "Rakib became the pioneer of AUST Robotics Club's digital presence. He independently took the initiative to build the club's very first website from scratch — designing the main backbone architecture and creating several key pages. This was a landmark breakthrough: for the first time, the club had a digital home.",
     achievement: "First ever website for AUST Robotics Club",
     people: [
       {
@@ -30,7 +30,7 @@ const milestones = [
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/rakib.jpg",
       },
     ],
-    icon: "ðŸŒ±",
+    icon: "🌱",
   },
   {
     id: "launch",
@@ -39,10 +39,10 @@ const milestones = [
     side: "left",
     title: "First Official Website Launched",
     description:
-      "The first official Google Sites website of AUST Robotics Club was launched â€” a huge milestone. The club now had a verified, publicly accessible digital identity that members and the world could visit.",
+      "The first official Google Sites website of AUST Robotics Club was launched — a huge milestone. The club now had a verified, publicly accessible digital identity that members and the world could visit.",
     achievement: "Google Sites website goes live",
     people: [],
-    icon: "ðŸš€",
+    icon: "🚀",
   },
   {
     id: "panel1",
@@ -52,7 +52,7 @@ const milestones = [
     title: "Birth of the Website Team",
     description:
       "For the first time in AUST Robotics Club history, a dedicated Website Team was officially formed. Showmik Majumder was appointed as the inaugural Director and Ahnaf Amer joined as Assistant Director. Together they refined and improved the Google Sites website, transforming it into a true identity and digital face of the club.",
-    achievement: "Official Website Team established â€” Google Site elevated to club identity",
+    achievement: "Official Website Team established — Google Site elevated to club identity",
     people: [
       {
         name: "Showmik Majumder",
@@ -65,7 +65,7 @@ const milestones = [
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
       },
     ],
-    icon: "ðŸ‘¥",
+    icon: "👥",
   },
   {
     id: "panel2",
@@ -74,7 +74,7 @@ const milestones = [
     side: "left",
     title: "The Leap to Full Stack",
     description:
-      "Ahnaf Amer stepped up as Director with Saobia Tinni joining as Assistant Director. This panel marked a visionary turning point â€” the team dared to dream beyond Google Sites. For the first time, the club decided to build a fully-fledged Full Stack website and a dedicated mobile application. Development began in earnest on both fronts.",
+      "Ahnaf Amer stepped up as Director with Saobia Tinni joining as Assistant Director. This panel marked a visionary turning point — the team dared to dream beyond Google Sites. For the first time, the club decided to build a fully-fledged Full Stack website and a dedicated mobile application. Development began in earnest on both fronts.",
     achievement: "Full Stack website & Mobile App development begins",
     people: [
       {
@@ -88,7 +88,7 @@ const milestones = [
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
       },
     ],
-    icon: "ðŸ’»",
+    icon: "💻",
   },
   {
     id: "panel3",
@@ -97,8 +97,8 @@ const milestones = [
     side: "right",
     title: "Full Stack Website & Mobile App Completed",
     description:
-      "Saobia Tinni ascended to Director with Shajedul Kabir Rafi and Arany Hasan as Assistant Directors. This panel delivered what was once only a vision â€” Shajedul Kabir Rafi single-handedly built the complete mobile application, and the full-stack website was brought to completion. The club now has a world-class digital ecosystem.",
-    achievement: "Full Stack Website âœ¦ Mobile App â€” both completed",
+      "Saobia Tinni ascended to Director with Shajedul Kabir Rafi and Arany Hasan as Assistant Directors. This panel delivered what was once only a vision — Shajedul Kabir Rafi single-handedly built the complete mobile application, and the full-stack website was brought to completion. The club now has a world-class digital ecosystem.",
+    achievement: "Full Stack Website ✦ Mobile App — both completed",
     people: [
       {
         name: "Saobia Tinni",
@@ -116,11 +116,11 @@ const milestones = [
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Arany%20-%20Arany%20Hasan.jpeg?updatedAt=1769118153821",
       },
     ],
-    icon: "ðŸ†",
+    icon: "🏆",
   },
 ];
 
-// â”€â”€ ANIMATED BACKGROUND â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ANIMATED BACKGROUND ───────────────────────────────────────────────────────
 function AnimatedBackground() {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -129,7 +129,7 @@ function AnimatedBackground() {
   );
 }
 
-// â”€â”€ SCROLL PROGRESS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SCROLL PROGRESS ───────────────────────────────────────────────────────────
 function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -141,7 +141,7 @@ function ScrollProgress() {
   );
 }
 
-// â”€â”€ AVATAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── AVATAR ────────────────────────────────────────────────────────────────────
 function Avatar({ person, delay = 0, isInView }: { person: { name: string; role: string; img: string }; delay?: number; isInView: boolean }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -166,7 +166,7 @@ function Avatar({ person, delay = 0, isInView }: { person: { name: string; role:
             onError={(e) => {
               e.currentTarget.style.display = "none";
               const parent = e.currentTarget.parentNode as HTMLElement | null;
-              if (parent) parent.innerHTML = `<div class="w-full h-full flex items-center justify-center text-2xl">ðŸ‘¤</div>`;
+              if (parent) parent.innerHTML = `<div class="w-full h-full flex items-center justify-center text-2xl">👤</div>`;
             }}
           />
         </div>
@@ -188,7 +188,7 @@ function Avatar({ person, delay = 0, isInView }: { person: { name: string; role:
   );
 }
 
-// â”€â”€ DESKTOP CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DESKTOP CARD ──────────────────────────────────────────────────────────────
 function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-90px" });
@@ -243,7 +243,7 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
 
               {/* achievement */}
               <div className="flex items-start gap-2 p-3 rounded-xl bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-5">
-                <span className="text-[#2ECC71] mt-0.5 flex-shrink-0 text-sm">âœ¦</span>
+                <span className="text-[#2ECC71] mt-0.5 flex-shrink-0 text-sm">✦</span>
                 <p className="text-[#2ECC71]/80 text-xs leading-relaxed font-medium" style={{ fontFamily: "'DM Sans',sans-serif" }}>
                   {item.achievement}
                 </p>
@@ -308,7 +308,7 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
   );
 }
 
-// â”€â”€ MOBILE CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── MOBILE CARD ───────────────────────────────────────────────────────────────
 function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]; index: number; isLast: boolean }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -346,7 +346,7 @@ function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]
           <span className="text-[10px] font-black tracking-[0.22em] uppercase text-[#2ECC71]" style={{ fontFamily: "'Sora',sans-serif" }}>
             {item.period}
           </span>
-          <span className="text-white/18">Â·</span>
+          <span className="text-white/18">·</span>
           <span className="text-white/35 text-[10px] uppercase tracking-wider" style={{ fontFamily: "'DM Sans',sans-serif" }}>
             {item.tag}
           </span>
@@ -365,7 +365,7 @@ function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]
               {item.description}
             </p>
             <div className="flex items-start gap-1.5 p-2.5 rounded-lg bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-4">
-              <span className="text-[#2ECC71] text-xs mt-0.5 flex-shrink-0">âœ¦</span>
+              <span className="text-[#2ECC71] text-xs mt-0.5 flex-shrink-0">✦</span>
               <p className="text-[#2ECC71]/75 text-[11px] leading-relaxed" style={{ fontFamily: "'DM Sans',sans-serif" }}>
                 {item.achievement}
               </p>
@@ -380,5 +380,189 @@ function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]
           </div>
         </div>
       </motion.div>
+    </div>
+  );
+}
 
-export default function JourneyPage() { return <div />; }
+// ── TIMELINE SPINE (desktop) ──────────────────────────────────────────────────
+function TimelineLine() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const scaleY = useSpring(scrollYProgress, { stiffness: 50, damping: 18 });
+  return (
+    <div ref={ref} className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px hidden md:block overflow-hidden">
+      <div className="absolute inset-0 bg-white/[0.045]" />
+      <motion.div style={{ scaleY, originY: 0 }} className="absolute inset-0 bg-gradient-to-b from-[#2ECC71]/65 via-[#2ECC71]/30 to-transparent" />
+    </div>
+  );
+}
+
+// ── HERO ──────────────────────────────────────────────────────────────────────
+function Hero() {
+  return (
+    <div className="relative text-center py-28 md:py-36 px-6 overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden>
+        <span
+          className="text-[clamp(55px,15vw,190px)] font-black leading-none tracking-tighter"
+          style={{ fontFamily: "'Sora',sans-serif", color: "rgba(255,255,255,0.018)" }}
+        >
+          LEGACY
+        </span>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10"
+      >
+        {/* eyebrow */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.28 }}
+          className="flex items-center justify-center gap-3 mb-5"
+        >
+          <div className="h-px w-10 bg-gradient-to-r from-transparent to-[#2ECC71]" />
+          <span className="text-[#2ECC71] text-[11px] font-bold tracking-[0.3em] uppercase" style={{ fontFamily: "'Sora',sans-serif" }}>
+            AUST Robotics Club · Website Team
+          </span>
+          <div className="h-px w-10 bg-gradient-to-l from-transparent to-[#2ECC71]" />
+        </motion.div>
+
+        {/* headline */}
+        <h1
+          className="text-[clamp(34px,7vw,78px)] font-black text-white mb-5 leading-[0.92] tracking-tight"
+          style={{ fontFamily: "'Sora',sans-serif" }}
+        >
+          Our Digital{" "}
+          <span className="relative inline-block">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]">Journey</span>
+            <motion.span
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.9, delay: 0.7, ease: "easeOut" }}
+              className="absolute bottom-1 left-0 right-0 h-[3px] bg-gradient-to-r from-[#2ECC71] to-[#27AE60] origin-left rounded-full"
+            />
+          </span>
+        </h1>
+
+        <p
+          className="text-white/42 text-base md:text-lg max-w-lg mx-auto leading-relaxed mb-10"
+          style={{ fontFamily: "'DM Sans',sans-serif" }}
+        >
+          From a single person's bold initiative to a full-stack website and mobile app — the story of how we built AUST Robotics Club's digital identity, one panel at a time.
+        </p>
+
+        {/* stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.65 }}
+          className="flex flex-wrap justify-center gap-3"
+        >
+          {[
+            { v: "2024", l: "Founded" },
+            { v: "4", l: "Panels" },
+            { v: "2", l: "Platforms" },
+            { v: "∞", l: "Ambition" },
+          ].map((s) => (
+            <div key={s.l} className="flex flex-col items-center px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.07]">
+              <span className="text-xl font-black text-[#2ECC71]" style={{ fontFamily: "'Sora',sans-serif" }}>{s.v}</span>
+              <span className="text-white/32 text-[10px] uppercase tracking-widest mt-0.5" style={{ fontFamily: "'DM Sans',sans-serif" }}>{s.l}</span>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* scroll hint */}
+        <motion.div
+          animate={{ y: [0, 9, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="mt-14 flex flex-col items-center gap-2 text-white/22"
+        >
+          <span className="text-[10px] tracking-[0.3em] uppercase" style={{ fontFamily: "'DM Sans',sans-serif" }}>Scroll to explore</span>
+          <div className="w-px h-8 bg-gradient-to-b from-[#2ECC71]/45 to-transparent" />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ── CLOSING ───────────────────────────────────────────────────────────────────
+function Closing() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 38 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="text-center pt-12 pb-32 px-6"
+    >
+      <div className="flex items-center justify-center gap-4 mb-10">
+        <div className="h-px flex-1 max-w-[100px] bg-gradient-to-r from-transparent to-[#2ECC71]/38" />
+        <div className="w-2 h-2 rounded-full bg-[#2ECC71] shadow-[0_0_12px_4px_rgba(46,204,113,0.5)]" />
+        <div className="h-px flex-1 max-w-[100px] bg-gradient-to-l from-transparent to-[#2ECC71]/38" />
+      </div>
+      <p className="text-white/22 text-[10px] tracking-[0.35em] uppercase mb-3" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+        The story continues
+      </p>
+      <h2 className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight" style={{ fontFamily: "'Sora',sans-serif" }}>
+        The best chapter is the next one.
+      </h2>
+      <p className="text-white/32 text-sm max-w-sm mx-auto mb-10" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+        Built with passion by a team that believed in something bigger than a website.
+      </p>
+      <motion.a
+        href="#"
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.97 }}
+        className="inline-flex items-center gap-3 px-9 py-3.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_40px_rgba(46,204,113,0.3)] hover:shadow-[0_0_60px_rgba(46,204,113,0.5)] transition-shadow duration-300 text-sm tracking-wide"
+        style={{ fontFamily: "'Sora',sans-serif" }}
+      >
+        <span>Explore Our Work</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </motion.a>
+    </motion.div>
+  );
+}
+
+// ── PAGE ──────────────────────────────────────────────────────────────────────
+export default function JourneyPage() {
+  useFonts();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return (
+    <main className="relative min-h-screen bg-black w-full overflow-x-hidden">
+      <AnimatedBackground />
+      <ScrollProgress />
+      <Hero />
+
+      <section className="relative max-w-5xl mx-auto px-6 md:px-10 pb-0">
+        {!isMobile && <TimelineLine />}
+
+        <div className={isMobile ? "space-y-0" : "space-y-20 py-6"}>
+          {milestones.map((item, i) =>
+            isMobile ? (
+              <MobileCard key={item.id} item={item} index={i} isLast={i === milestones.length - 1} />
+            ) : (
+              <DesktopCard key={item.id} item={item} index={i} />
+            )
+          )}
+        </div>
+      </section>
+
+      <Closing />
+    </main>
+  );
+}
