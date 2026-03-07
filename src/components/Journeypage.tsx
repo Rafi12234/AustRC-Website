@@ -150,5 +150,141 @@ function Avatar({ person, delay = 0, isInView }: { person: { name: string; role:
       animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
       transition={{ duration: 0.45, delay, type: "spring", stiffness: 180 }}
       className="flex flex-col items-center"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="relative">
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0.45 }}
+          className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-[#2ECC71] to-[#27AE60]"
+        />
+        <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-black bg-[#0a0a0a]">
+          <img
+            src={person.img}
+            alt={person.name}
+            className="w-full h-full object-cover object-top"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              const parent = e.currentTarget.parentNode as HTMLElement | null;
+              if (parent) parent.innerHTML = `<div class="w-full h-full flex items-center justify-center text-2xl">ðŸ‘¤</div>`;
+            }}
+          />
+        </div>
+        <motion.div
+          animate={{ scale: [1, 1.6], opacity: [0.3, 0] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
+          className="absolute inset-0 rounded-full border border-[#2ECC71]/35"
+        />
+      </div>
+      <div className="mt-2 text-center max-w-[80px]">
+        <p className="text-white text-[11px] font-semibold leading-tight" style={{ fontFamily: "'Sora',sans-serif" }}>
+          {person.name}
+        </p>
+        <p className="text-[#2ECC71] text-[10px] mt-0.5 leading-tight" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+          {person.role}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
 
-export default function JourneyPage() { return <div><AnimatedBackground /><ScrollProgress /></div>; }
+// â”€â”€ DESKTOP CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-90px" });
+  const isLeft = item.side === "left";
+
+  return (
+    <div ref={ref} className={`relative flex items-start w-full ${isLeft ? "flex-row-reverse" : "flex-row"}`}>
+
+      {/* Card */}
+      <motion.div
+        initial={{ opacity: 0, x: isLeft ? 65 : -65, filter: "blur(8px)" }}
+        animate={isInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+        className={`w-[calc(50%-68px)] ${isLeft ? "pl-8" : "pr-8"}`}
+      >
+        <div className="group relative">
+          {/* hover glow */}
+          <div
+            className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            style={{
+              background: `radial-gradient(ellipse at ${isLeft ? "100%" : "0%"} 50%, rgba(46,204,113,0.13), transparent 70%)`,
+            }}
+          />
+          <div className="relative rounded-2xl overflow-hidden border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm group-hover:border-[#2ECC71]/22 transition-all duration-500">
+            {/* top bar */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={isInView ? { scaleX: 1 } : {}}
+              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+              className={`h-[2px] w-full bg-gradient-to-r from-[#2ECC71] to-[#27AE60]/30 ${isLeft ? "origin-right" : "origin-left"}`}
+            />
+
+            <div className="p-6">
+              {/* tag row */}
+              <div className="flex items-center justify-between mb-4">
+                <span
+                  className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#2ECC71] bg-[#2ECC71]/10 border border-[#2ECC71]/20 px-3 py-1 rounded-full"
+                  style={{ fontFamily: "'Sora',sans-serif" }}
+                >
+                  {item.tag}
+                </span>
+                <span className="text-2xl">{item.icon}</span>
+              </div>
+
+              <h3 className="text-white font-bold text-xl leading-tight tracking-tight mb-3" style={{ fontFamily: "'Sora',sans-serif" }}>
+                {item.title}
+              </h3>
+
+              <p className="text-white/48 text-sm leading-relaxed mb-5" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+                {item.description}
+              </p>
+
+              {/* achievement */}
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-5">
+                <span className="text-[#2ECC71] mt-0.5 flex-shrink-0 text-sm">âœ¦</span>
+                <p className="text-[#2ECC71]/80 text-xs leading-relaxed font-medium" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+                  {item.achievement}
+                </p>
+              </div>
+
+              {/* people */}
+              {item.people.length > 0 && (
+                <div className={`flex gap-5 flex-wrap ${isLeft ? "justify-end" : "justify-start"}`}>
+                  {item.people.map((p: (typeof milestones)[number]["people"][number], pi: number) => (
+                    <Avatar key={p.name} person={p} delay={0.15 + pi * 0.12} isInView={isInView} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Centre node */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20 pt-5">
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={isInView ? { scale: 1, opacity: 1 } : {}}
+          transition={{ type: "spring", stiffness: 220, damping: 16 }}
+          className="relative"
+        >
+          <div className="w-14 h-14 rounded-full border border-[#2ECC71]/22 bg-black flex items-center justify-center">
+            <motion.div
+              animate={isInView ? { scale: [1, 1.3, 1] } : {}}
+              transition={{ duration: 0.55, delay: 0.25 }}
+              className="w-5 h-5 rounded-full bg-gradient-to-br from-[#2ECC71] to-[#27AE60] shadow-[0_0_22px_6px_rgba(46,204,113,0.45)]"
+            />
+          </div>
+          <motion.div
+            animate={{ scale: [1, 2.1], opacity: [0.3, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut", delay: index * 0.3 }}
+            className="absolute inset-0 rounded-full border border-[#2ECC71]/25"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.65], opacity: [0.2, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut", delay: index * 0.3 + 0.6 }}
+            className="absolute inset-0 rounded-full border border-[#2ECC71]/15"
+
+export default function JourneyPage() { return <div />; }
