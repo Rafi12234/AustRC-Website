@@ -137,9 +137,9 @@ export function SponsorsSection() {
             >
               {/* First set of sponsors */}
               {sponsors.map((sponsor, index) => (
-                <div key={`first-${index}`} className="flex-shrink-0 w-64">
-                  <Card className="group hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] transition-all duration-300 bg-gradient-to-br from-[rgba(46,204,113,0.05)] to-transparent border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] cursor-pointer backdrop-blur-sm h-48">
-                    <CardContent className="p-8 flex items-center justify-center h-full">
+                <div key={`first-${index}`} className="flex-shrink-0 w-72">
+                  <Card className="group hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] transition-all duration-300 bg-white border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] cursor-pointer h-56 rounded-xl overflow-hidden">
+                    <CardContent className="p-4 flex items-center justify-center h-full bg-white">
                       <img 
                         src={sponsor.imageUrl} 
                         alt={sponsor.name}
@@ -151,9 +151,9 @@ export function SponsorsSection() {
               ))}
               {/* Duplicate set for seamless loop */}
               {sponsors.map((sponsor, index) => (
-                <div key={`second-${index}`} className="flex-shrink-0 w-64">
-                  <Card className="group hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] transition-all duration-300 bg-gradient-to-br from-[rgba(46,204,113,0.05)] to-transparent border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] cursor-pointer backdrop-blur-sm h-48">
-                    <CardContent className="p-8 flex items-center justify-center h-full">
+                <div key={`second-${index}`} className="flex-shrink-0 w-72">
+                  <Card className="group hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] transition-all duration-300 bg-white border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] cursor-pointer h-56 rounded-xl overflow-hidden">
+                    <CardContent className="p-4 flex items-center justify-center h-full bg-white">
                       <img 
                         src={sponsor.imageUrl} 
                         alt={sponsor.name}
