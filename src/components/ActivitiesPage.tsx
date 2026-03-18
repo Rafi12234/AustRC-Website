@@ -51,6 +51,15 @@ export function ActivitiesPage() {
       buttonAction: () => navigate('/activities/event-website'),
       image: 'https://ik.imagekit.io/mekt2pafz/event-website.jpg?updatedAt=1769056096931',
       imagePosition: 'left'
+    },
+    {
+      id: 'other',
+      title: 'Other Activities',
+      description: 'Beyond our core programs, AUSTRC engages in a wide variety of other activities that enrich the experience of our members. From community outreach to special interest projects, there is always something exciting happening at AUSTRC.',
+      buttonText: 'Explore',
+      buttonAction: () => navigate('/activities/other-activities'),
+      image: 'https://res.cloudinary.com/dxyhzgrul/image/upload/v1761865403/events/hyb2tkp0gvt7liqg9rmn.jpg',
+      imagePosition: 'right'
     }
   ];
 
@@ -77,7 +86,7 @@ export function ActivitiesPage() {
       {/* Activity Sections */}
       <div className="container mx-auto px-6">
         <div className="space-y-20">
-          {activities.slice(0, -1).map((activity, index) => (
+          {activities.filter(a => a.id !== 'website').map((activity, index) => (
             <motion.div
               key={activity.id}
               initial={{ opacity: 0, y: 30 }}

@@ -130,7 +130,7 @@ const SectionHeader = () => (
       viewport={{ once: true }}
       transition={{ duration: 0.35, delay: 0.1 }}
     >
-      <span className="text-white">Recent Events</span>
+      <span className="text-white">Events</span>
       <br className="sm:hidden" />
       <span className="text-white"> of </span>
       <span className="relative">
