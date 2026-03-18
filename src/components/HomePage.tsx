@@ -6,6 +6,7 @@ import { HeroSection } from "./HeroSection";
 import { EventsSection } from "./EventsSection";
 import { EducationalProgramsSection } from "./EducationalProgramsSection";
 import { ResearchProjectsHomepageSection } from "./ResearchProjectsHomepageSection";
+import { OtherActivitiesHomepageSection } from "./OtherActivitiesHomepageSection";
 import { TestimonialsSection } from "./TestimonialsSection";
 import { CollaborationsSection } from "./CollaborationsSection";
 import { SponsorsSection } from "./SponsorsSection";
@@ -137,6 +138,17 @@ export function HomePage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <ResearchProjectsHomepageSection />
+      </motion.div>
+
+      <AnimatedDivider />
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <OtherActivitiesHomepageSection />
       </motion.div>
 
       <AnimatedDivider />
