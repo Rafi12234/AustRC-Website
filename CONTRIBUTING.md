@@ -15,6 +15,191 @@ Everything you need to know to build new pages and components that automatically
 7. [Fixing Existing Hardcoded Colors — Global Approach](#7-fixing-existing-hardcoded-colors--global-approach)
 8. [Performance Rules](#8-performance-rules)
 9. [Pre-submit Checklist](#9-pre-submit-checklist)
+10. [Admin Panel](#10-admin-panel)
+
+---
+
+## 10. Admin Panel
+
+The admin panel lives at **`/admin`** and is protected by Firebase Authentication. It allows authorized administrators to manage all Firestore data without touching the database directly.
+
+### Accessing the Admin Panel
+
+1. Go to `http://localhost:3001/admin` (local) or `https://austrc.com/admin` (production)
+2. Sign in with an authorized Firebase admin email and password
+3. Firebase Authentication keeps the session until logout or browser auth expiry
+
+> **Local:** Edit [`.env`](file://.env) in the project root:
+> ```
+> VITE_ADMIN_EMAILS=webdev.austrc@gmail.com
+> ```
+
+> **Production (Vercel):** `.env` is git-ignored and NOT deployed. You must add the env var manually:
+> 1. Go to **Vercel Dashboard → Project → Settings → Environment Variables**
+> 2. Add `VITE_ADMIN_EMAILS` = comma-separated admin emails, for example `webdev.austrc@gmail.com,another-admin@example.com`
+> 3. Redeploy the project
+>
+> Also enable Firebase Email/Password sign-in and create matching users in **Firebase Console -> Authentication -> Users**. Do not add or rename Firestore data fields for admin access.
+
+### Image Upload in Admin Editors
+
+Every image field in the admin panel supports **two modes**:
+
+1. **Upload from device** — Uploads directly to Firebase Storage (max 5MB). Requires Firebase Storage rules to allow writes.
+2. **Paste image URL** — Paste any direct link from:
+   - [ImageKit](https://imagekit.io) — `https://ik.imagekit.io/…`
+   - [Cloudinary](https://cloudinary.com) — `https://res.cloudinary.com/…`
+   - Any publicly accessible CDN or direct image URL
+
+> **Recommended:** Upload images to **ImageKit** (the existing CDN already used by this project) and paste the URL. This is faster, doesn't require Firebase Storage rules, and images are automatically optimized.
+
+### Firestore Security Rules (Required)
+
+For the admin panel to write data, your Firestore Security Rules **must** allow writes only for authenticated admin emails. Keep the email list synced with `VITE_ADMIN_EMAILS`.
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'webdev.austrc@gmail.com'
+        ];
+    }
+
+    match /{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}
+```
+
+> ⚠️ **Important:** Without these rules, the admin panel will show a "Permission Denied" error when trying to add, update, or delete records.
+
+> **Security note:** Never use `allow read, write: if true;` in production. That makes the database publicly writable.
+
+### Firebase Storage Rules (Required for Admin Uploads)
+
+Paste this in **Firebase Console -> Storage -> Rules** so only admins can upload images under `admin_uploads/`:
+
+```
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'webdev.austrc@gmail.com'
+        ];
+    }
+
+    match /admin_uploads/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
+```
+
+### Admin Panel Structure
+
+```
+src/components/admin/
+├── AdminPage.tsx            ← Main layout, auth guard, sidebar navigation
+├── DashboardHome.tsx        ← Overview stats page
+├── ImageUpload.tsx          ← Firebase Storage image upload helper
+├── NoticesEditor.tsx        ← Notice Board CRUD
+├── EventsEditor.tsx         ← Events + Headlines + Gallery CRUD
+├── AchievementsEditor.tsx   ← Trophies & Awards CRUD
+├── ProjectsEditor.tsx       ← Research Projects + Owners CRUD
+├── GoverningPanelEditor.tsx ← Semester + Panel Member CRUD
+├── SponsorsEditor.tsx       ← Sponsors CRUD
+├── CollaborationsEditor.tsx ← Collaborations CRUD
+└── TestimonialsEditor.tsx   ← Testimonial images update
+```
+
+### Adding a New Admin Editor
+
+**Step 1** — Create `src/components/admin/MyDataEditor.tsx` using this template:
+
+```tsx
+import { useState, useEffect } from 'react';
+import { db } from '@/config/firebase';
+import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { Plus, Edit2, Trash2, Loader2, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+interface MyData {
+  id: string;
+  Field_Name: string; // ← Use EXACT Firestore field names, no renaming!
+}
+
+export function MyDataEditor() {
+  const [items, setItems] = useState<MyData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // IMPORTANT: Use the exact Firestore collection path
+  const col = collection(db, 'All_Data', 'My_Collection', 'documents');
+
+  const fetchItems = async () => {
+    setLoading(true);
+    const snap = await getDocs(col);
+    setItems(snap.docs.map(d => ({ id: d.id, ...d.data() } as MyData)));
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchItems(); }, []);
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-white">My Data</h2>
+      {/* Add your CRUD UI here */}
+    </div>
+  );
+}
+```
+
+**Step 2** — Register it in `AdminPage.tsx`:
+
+```tsx
+// 1. Import
+import { MyDataEditor } from './MyDataEditor';
+
+// 2. Add to menuItems array
+{ id: 'my-data', label: 'My Data', icon: SomeLucideIcon },
+
+// 3. Add to main content area
+{activeTab === 'my-data' && <MyDataEditor />}
+```
+
+### Database Field Name Rule
+
+> 🚫 **Never rename Firestore fields.** The mobile app and website both depend on the exact same field names. Always use the original field names exactly as they appear in Firestore (e.g., `Event_Name`, `Cover_Picture`, `Owner_1_Name`).
+
+### Image Uploads
+
+Use the built-in `ImageUpload` component which uploads to Firebase Storage and returns a URL:
+
+```tsx
+import { ImageUpload } from './ImageUpload';
+
+<ImageUpload
+  label="Cover Picture"
+  currentUrl={coverUrl}
+  onUploadComplete={(url) => setCoverUrl(url)}
+  onClear={() => setCoverUrl('')}
+/>
+```
 
 ---
 
