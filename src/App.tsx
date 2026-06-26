@@ -96,6 +96,7 @@ function SiteLayout() {
           <Route path="/batch-representative" element={<BatchRepresentativePage />} />
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/gm-registration" element={<RegistrationPage />} />
+          <Route path="/GM_Registration" element={<RegistrationPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

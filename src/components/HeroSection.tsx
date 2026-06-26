@@ -274,6 +274,56 @@ export function HeroSection() {
         }
         .hs-title { animation: hs-glow 4s ease-in-out infinite; }
 
+        /* Premium Shimmer Button styling */
+        .premium-shimmer-btn {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 36px;
+          font-weight: 700;
+          font-size: 1rem;
+          color: #2ECC71;
+          background: rgba(46, 204, 113, 0.04);
+          border: 1.5px solid rgba(46, 204, 113, 0.35);
+          border-radius: 9999px;
+          box-shadow: 0 0 25px rgba(46, 204, 113, 0.1), inset 0 0 10px rgba(46, 204, 113, 0.05);
+          backdrop-filter: blur(10px);
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .premium-shimmer-btn:hover {
+          color: #ffffff;
+          background: linear-gradient(135deg, #2ECC71, #27AE60);
+          border-color: #2ECC71;
+          box-shadow: 0 0 35px rgba(46, 204, 113, 0.5), 0 0 15px rgba(46, 204, 113, 0.3);
+          transform: translateY(-2px);
+        }
+        .premium-shimmer-btn::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -150%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.45) 50%,
+            rgba(255, 255, 255, 0) 100%
+          );
+          transform: skewX(-25deg);
+          animation: hs-shimmer 4.5s infinite ease-in-out;
+        }
+        @keyframes hs-shimmer {
+          0% {
+            left: -150%;
+          }
+          30%, 100% {
+            left: 150%;
+          }
+        }
+
         /* Kill desktop board animations on mobile */
         @media (max-width: 1023px) {
           .hs-pulse-a, .hs-pulse-b { animation: none !important; }
@@ -350,8 +400,8 @@ export function HeroSection() {
               className="flex justify-center pt-4"
             >
               <Link
-                to="/registration"
-                className="group inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base"
+                to="/GM_Registration"
+                className="group premium-shimmer-btn text-base"
               >
                 <span>Register as General Member</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
