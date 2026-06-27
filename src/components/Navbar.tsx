@@ -100,13 +100,14 @@ export function Navbar() {
     { name: 'About us', path: '/about', section: null },
   ];
 
-  const activitiesDropdownItems = [
-    { name: 'Events', path: '/activities/events' },
-    { name: 'Achievements', path: '/activities/achievements' },
-    { name: 'Educational Programs', path: '/activities/educational-activities' },
-    { name: 'Research and Projects', path: '/research-projects' },
-    { name: 'Our Event Website', path: '/activities/event-website' },
-  ];
+const activitiesDropdownItems = [
+  { name: 'Events', path: '/activities/events' },
+  { name: 'Achievements', path: '/activities/achievements' },
+  { name: 'Educational Programs', path: '/activities/educational-activities' },
+  { name: 'Research and Projects', path: '/research-projects' },
+  { name: 'Robotics Bootcamp 101', path: '/bootcamp' },
+  { name: 'Our Event Website', path: '/activities/event-website' },
+];
 
   // Fetch semesters from Firebase
   useEffect(() => {
