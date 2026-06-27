@@ -31,7 +31,7 @@ function MobileCircuit({ g }: { g: string }) {
         <g fill={g} opacity="0.25">
           {[[40,30],[90,30],[40,60],[90,60],[130,30],[30,100],[70,100],[110,100],[30,130],[70,130],[110,150]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
         </g>
-        <path d="M0,60 H40 V30 H90 V60 H130 V30 M150,100 H110 V130 H70 V100 H30 V130 H0"
+        <path d="M0,60 H40 V30 H90 V60 H130 V30 M150,130 H110 V100 H70 V130 H30 V100 H0"
           stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
           filter="url(#pcb-glow-m)" className="hs-pulse-m-a" />
 
@@ -45,7 +45,7 @@ function MobileCircuit({ g }: { g: string }) {
         <g fill={g} opacity="0.25">
           {[[360,30],[310,30],[360,60],[310,60],[270,30],[370,100],[330,100],[290,100],[370,130],[330,130],[290,150]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
         </g>
-        <path d="M400,60 H360 V30 H310 V60 H270 V30 M250,100 H290 V130 H330 V100 H370 V130 H400"
+        <path d="M400,60 H360 V30 H310 V60 H270 V30 M250,130 H290 V100 H330 V130 H370 V100 H400"
           stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
           filter="url(#pcb-glow-m)" className="hs-pulse-m-b" />
 
@@ -59,7 +59,7 @@ function MobileCircuit({ g }: { g: string }) {
         <g fill={g} opacity="0.25">
           {[[40,630],[90,630],[40,600],[90,600],[130,630],[30,560],[70,560],[110,560],[30,530],[70,530],[110,520]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
         </g>
-        <path d="M0,600 H40 V630 H90 V600 H130 V630 M150,560 H110 V530 H70 V560 H30 V530 H0"
+        <path d="M0,600 H40 V630 H90 V600 H130 V630 M150,530 H110 V560 H70 V530 H30 V560 H0"
           stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
           filter="url(#pcb-glow-m)" className="hs-pulse-m-a" />
 
@@ -73,7 +73,7 @@ function MobileCircuit({ g }: { g: string }) {
         <g fill={g} opacity="0.25">
           {[[360,630],[310,630],[360,600],[310,600],[270,630],[370,560],[330,560],[290,560],[370,530],[330,530],[290,520]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
         </g>
-        <path d="M400,600 H360 V630 H310 V600 H270 V630 M250,560 H290 V530 H330 V560 H370 V530 H400"
+        <path d="M400,600 H360 V630 H310 V600 H270 V630 M250,530 H290 V560 H330 V530 H370 V560 H400"
           stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
           filter="url(#pcb-glow-m)" className="hs-pulse-m-b" />
       </svg>
@@ -81,23 +81,37 @@ function MobileCircuit({ g }: { g: string }) {
   );
 }
 
+
 function CircuitBoard({ g }: { g: string }) {
   return (
-    <div className="hs-boards absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      <svg className="w-full h-full" viewBox="0 0 1200 700"
-        preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
+      <div
+        className="hs-boards absolute left-6 pointer-events-none"
+        style={{
+          top: 'calc(50% + 40px)',
+          transform: 'translateY(-50%)',
+          width: 'calc(75vh * 220 / 420)',
+          maxWidth: 'min(18vw, 350px)',
+          aspectRatio: '220/420',
+          zIndex: 0
+        }}
+        aria-hidden="true"
+      >
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 220 420"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ overflow: 'visible' }}
+        >
+          <defs>
+            <filter id="pcb-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
 
-        <defs>
-          <filter id="pcb-glow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="3" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-
-        {/* ══════════════════════════════════════════════════════
-            LEFT PCB BOARD  — anchored bottom-left
-            ══════════════════════════════════════════════════════ */}
-        <g transform="translate(20, 120)">
           {/* Board outline */}
           <rect x="0" y="0" width="220" height="420" rx="6"
             stroke={g} strokeWidth="1" fill="none" opacity="0.18" />
@@ -157,15 +171,39 @@ function CircuitBoard({ g }: { g: string }) {
           </g>
 
           {/* Animated pulse path — travels through traces */}
-          <path d="M30,40 H80 V80 H140 V40 H190 M190,100 H160 V140 H110 V100 H60 V140 H30 M30,180 H70 V220 H130 V260 H80 V300 H150 V340 H90 V380 H190"
+          <path d="M30,40 H80 V80 H140 V40 H190 M190,140 H160 V100 H110 V140 H60 V100 H30 M30,180 H70 V220 H130 V260 H80 V300 H150 V260 H190 V220 H150 M30,320 H90 V360 H50 V380 H190 M130,300 H190 V340 H130 V380"
             stroke={g} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"
             filter="url(#pcb-glow)" className="hs-pulse-a" />
-        </g>
+        </svg>
+      </div>
 
-        {/* ══════════════════════════════════════════════════════
-            RIGHT PCB BOARD — anchored bottom-right, mirrored
-            ══════════════════════════════════════════════════════ */}
-        <g transform="translate(960, 120)">
+      <div
+        className="hs-boards absolute right-6 pointer-events-none"
+        style={{
+          top: 'calc(50% + 40px)',
+          transform: 'translateY(-50%)',
+          width: 'calc(75vh * 220 / 420)',
+          maxWidth: 'min(18vw, 350px)',
+          aspectRatio: '220/420',
+          zIndex: 0
+        }}
+        aria-hidden="true"
+      >
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 220 420"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ overflow: 'visible' }}
+        >
+          <defs>
+            <filter id="pcb-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
           {/* Board outline */}
           <rect x="0" y="0" width="220" height="420" rx="6"
             stroke={g} strokeWidth="1" fill="none" opacity="0.18" />
@@ -225,11 +263,12 @@ function CircuitBoard({ g }: { g: string }) {
           </g>
 
           {/* Animated pulse — right board */}
-          <path d="M190,40 H140 V80 H80 V40 H30 M30,100 H60 V140 H110 V100 H160 V140 H190 M190,180 H150 V220 H90 V260 H140 V300 H70 V340 H130 V380 H30"
+          <path d="M190,40 H140 V80 H80 V40 H30 M30,140 H60 V100 H110 V140 H160 V100 H190 M190,180 H150 V220 H90 V260 H140 V300 H70 V260 H30 V220 H70 M190,320 H130 V360 H170 V380 H30 M90,300 H30 V340 H90 V380"
             stroke={g} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"
-            filter="url(#pcb-glow)" className="hs-pulse-b" /></g>
-      </svg>
-    </div>
+            filter="url(#pcb-glow)" className="hs-pulse-b" />
+        </svg>
+      </div>
+    </>
   );
 }
 
@@ -243,6 +282,19 @@ export function HeroSection() {
   return (
     <>
       <style>{`
+        /* Underline responsiveness */
+        .hs-underline {
+          width: 100% !important;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+        @media (min-width: 768px) {
+          .hs-underline {
+            width: calc(100% + 60px) !important;
+            margin-left: -30px !important;
+          }
+        }
+
         /* ── 1 pulse dot per board ── */
         .hs-pulse-a, .hs-pulse-b {
           stroke-dasharray: 28 9999;
@@ -370,34 +422,40 @@ export function HeroSection() {
                 style={{ color: t.textSecondary }}>
                 Welcome to
               </p>
-              <h1
-                className="hs-title text-5xl sm:text-6xl md:text-7xl lg:text-[84px] font-bold tracking-tight leading-[1.05] pb-2"
-                style={{
-                  backgroundImage: `linear-gradient(to right, ${t.brandGreen}, ${t.brandGreenMid}, ${t.brandGreenDark})`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                Aust Robotics Club
-              </h1>
+              <div style={{ display: 'inline-block', position: 'relative' }}>
+                <h1
+                  className="hs-title text-5xl sm:text-6xl md:text-7xl lg:text-[84px] font-bold tracking-tight leading-[1.05] pb-2"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, ${t.brandGreen}, ${t.brandGreenMid}, ${t.brandGreenDark})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Aust Robotics Club
+                </h1>
+                
+                {/* Underline matching full text length */}
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.75, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="hs-underline rounded-full mx-auto"
+                  style={{
+                    height: '3px',
+                    background: `linear-gradient(to right, ${t.brandGreen}, ${t.brandGreenMid}, ${t.brandGreenDark})`,
+                    marginTop: '14px'
+                  }}
+                />
+              </div>
             </motion.div>
-
-            {/* Underline */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.75, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="w-44 h-[3px] rounded-full mx-auto"
-              style={{ background: `linear-gradient(to right, ${t.brandGreen}, ${t.brandGreenMid}, ${t.brandGreenDark})` }}
-            />
 
             {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.42 }}
-              className="text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+              className="text-sm sm:text-base md:text-lg max-w-lg mx-auto leading-relaxed"
               style={{ color: t.textSecondary }}
             >
               Join a community of innovators mastering quadcopters, AI, and next-gen robotics.
