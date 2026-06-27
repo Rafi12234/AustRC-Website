@@ -38,6 +38,8 @@ import { BatchRepresentativePage } from './components/BatchRepresentativePage';
 import { RegistrationPage } from './components/RegistrationPage';
 import { AdminPage } from './components/admin/AdminPage';
 
+import { BootcampPage } from './components/bootcamp/BootcampPage';
+import { BootcampWingDetailPage } from './components/bootcamp/BootcampWingDetailPage';
 
 // Scroll to top on every route change
 function ScrollToTop() {
@@ -97,6 +99,9 @@ function SiteLayout() {
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/gm-registration" element={<RegistrationPage />} />
           <Route path="/GM_Registration" element={<RegistrationPage />} />
+
+          <Route path="/bootcamp" element={<BootcampPage />} />
+          <Route path="/bootcamp/:wingSlug" element={<BootcampWingDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
