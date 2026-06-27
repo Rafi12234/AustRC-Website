@@ -21,6 +21,7 @@ import {
 import { BOOTCAMP_BASE_PATH, bootcampWings } from '@/data/bootcampData';
 import { useTokens } from '@/tokens/useTokens';
 import { useState } from 'react';
+import bootcampHeroImage from '@/assets/bootcamp.png';
 
 // ─── Particle Config ────────────────────────────────────────────────────────
 const BOOTCAMP_PARTICLES = [
@@ -105,50 +106,52 @@ const FloatingBadge = () => (
 );
 
 // ─── Hero Title ─────────────────────────────────────────────────────────────
+// ─── Hero Image Title ───────────────────────────────────────────────────────
 const HeroTitle = () => {
-  const t = useTokens();
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 35, scale: 0.94 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="bootcamp-hero-image-wrap"
     >
-      <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-6">
-        <span style={{ color: t.textPrimary }}>Robotics</span>
-        <br />
-        <span className="relative inline-block">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
-            Bootcamp
-          </span>
-          <motion.svg
-            className="absolute -bottom-3 left-0 w-full"
-            viewBox="0 0 300 12"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-          >
-            <motion.path
-              d="M2 8C75 2 225 2 298 8"
-              stroke="url(#hero-underline)"
-              strokeWidth="4"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
-            />
-            <defs>
-              <linearGradient id="hero-underline" x1="0" y1="0" x2="300" y2="0">
-                <stop stopColor="#2ECC71" />
-                <stop offset="0.5" stopColor="#3DED97" />
-                <stop offset="1" stopColor="#27AE60" />
-              </linearGradient>
-            </defs>
-          </motion.svg>
-        </span>
-        <br />
-        <span style={{ color: t.textPrimary }}>101</span>
-      </h1>
+      {/* SEO / Accessibility heading */}
+      <h1 className="bootcamp-visually-hidden">Robotics Bootcamp 101</h1>
+
+      {/* Creative glow frame */}
+      <div className="bootcamp-hero-glow" />
+
+      <div className="bootcamp-hero-image-card">
+        {/* Top shine */}
+        <div className="bootcamp-hero-shine" />
+
+        {/* Main PNG */}
+        <motion.img
+          src={bootcampHeroImage}
+          alt="Robotics Bootcamp 101"
+          className="bootcamp-hero-image"
+          draggable={false}
+          initial={{ filter: 'drop-shadow(0 0 0 rgba(46,204,113,0))' }}
+          animate={{
+            filter: [
+              'drop-shadow(0 0 16px rgba(46,204,113,0.22))',
+              'drop-shadow(0 0 34px rgba(46,204,113,0.38))',
+              'drop-shadow(0 0 16px rgba(46,204,113,0.22))',
+            ],
+          }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Bottom reflection */}
+        <div className="bootcamp-hero-reflection">
+          <img
+            src={bootcampHeroImage}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+          />
+        </div>
+      </div>
     </motion.div>
   );
 };
@@ -650,6 +653,156 @@ export function BootcampPage() {
       <ScrollProgress />
 <style>
   {`
+
+  .bootcamp-hero-image-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bootcamp-hero-glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(46, 204, 113, 0.28) 0%, transparent 62%),
+    radial-gradient(circle, rgba(61, 237, 151, 0.12) 0%, transparent 72%);
+  filter: blur(34px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.bootcamp-hero-image-card {
+  position: relative;
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: 34px;
+  border: 1px solid rgba(46, 204, 113, 0.22);
+  background:
+    linear-gradient(135deg, rgba(46, 204, 113, 0.08), rgba(46, 204, 113, 0.02)),
+    rgba(4, 12, 8, 0.36);
+  box-shadow:
+    0 0 60px rgba(46, 204, 113, 0.14),
+    inset 0 0 28px rgba(46, 204, 113, 0.045);
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+}
+
+.bootcamp-hero-image-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(46, 204, 113, 0.55),
+    transparent
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.bootcamp-hero-shine {
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  transform: skewX(-18deg);
+  animation: bootcampHeroShine 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.bootcamp-hero-image {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  user-select: none;
+}
+
+.bootcamp-hero-reflection {
+  position: absolute;
+  left: 50%;
+  bottom: -32%;
+  width: 72%;
+  transform: translateX(-50%) scaleY(-1);
+  opacity: 0.09;
+  filter: blur(2px);
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 70%);
+}
+
+.bootcamp-hero-reflection img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bootcamp-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes bootcampHeroShine {
+  0% {
+    left: -80%;
+  }
+  45% {
+    left: 130%;
+  }
+  100% {
+    left: 130%;
+  }
+}
+
+@media (max-width: 768px) {
+  .bootcamp-hero-image-wrap {
+    max-width: 92vw;
+    margin-bottom: 22px;
+  }
+
+  .bootcamp-hero-image-card {
+    padding: 12px 14px;
+    border-radius: 24px;
+  }
+
+  .bootcamp-hero-image {
+    max-width: 100%;
+  }
+
+  .bootcamp-hero-reflection {
+    display: none;
+  }
+}
     .bootcamp-stats-grid {
       display: grid !important;
       grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
