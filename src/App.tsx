@@ -40,6 +40,7 @@ import { AdminPage } from './components/admin/AdminPage';
 
 import { BootcampPage } from './components/bootcamp/BootcampPage';
 import { BootcampWingDetailPage } from './components/bootcamp/BootcampWingDetailPage';
+import { BootcampWingRedirectPage } from './components/bootcamp/BootcampWingRedirectPage';
 
 // Scroll to top on every route change
 function ScrollToTop() {
@@ -101,6 +102,11 @@ function SiteLayout() {
           <Route path="/GM_Registration" element={<RegistrationPage />} />
 
           <Route path="/bootcamp" element={<BootcampPage />} />
+          {/* Short wing-N redirect routes → go directly to Google Form */}
+          <Route path="/bootcamp/wing-1" element={<BootcampWingRedirectPage />} />
+          <Route path="/bootcamp/wing-2" element={<BootcampWingRedirectPage />} />
+          <Route path="/bootcamp/wing-3" element={<BootcampWingRedirectPage />} />
+          <Route path="/bootcamp/wing-4" element={<BootcampWingRedirectPage />} />
           <Route path="/bootcamp/:wingSlug" element={<BootcampWingDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
