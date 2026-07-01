@@ -15,6 +15,9 @@ import {
   Map,
   Trophy,
   CheckCircle2,
+  Package,
+  UserCheck,
+  UsersRound,
 } from 'lucide-react';
 import {
   BOOTCAMP_BASE_PATH,
@@ -43,6 +46,67 @@ const WING_REGISTRATION_LINKS: Record<string, string> = {
   'web-app-design':               'https://forms.gle/PvEhHp86NjyPGSjT6',
 };
 
+// ─── Solo / Team config ───────────────────────────────────────────────────────
+const WING_FORMAT_TAG: Record<string, 'Solo' | 'Team'> = {
+  'basic-robotics-projects':     'Team',
+  'pcb-design-fabrication':      'Solo',
+  'solidworks-bootcamp-roadmap': 'Solo',
+  'web-app-design':              'Team',
+};
+
+// ─── Components list (Wing 1 only) ────────────────────────────────────────────
+const WING1_COMPONENTS = [
+  {
+    category: 'Microcontrollers',
+    items: [
+      { name: 'ESP32', qty: 1 },
+    ],
+  },
+  {
+    category: 'Sensors',
+    items: [
+      { name: 'PIR Motion Sensor', qty: 1 },
+      { name: 'LDR (Light Dependent Resistor)', qty: 1 },
+      { name: 'Soil Moisture Sensor', qty: 1 },
+      { name: 'IR Sensor (pair)', qty: 2 },
+      { name: 'DHT11 Temperature & Humidity Sensor', qty: 1 },
+      { name: 'Sonar Sensor', qty: 1 },
+    ],
+  },
+  {
+    category: 'Actuators',
+    items: [
+      { name: 'SG-90 Servo Motor', qty: 1 },
+      { name: 'Relay Module 2 channel', qty: 1 },
+      { name: 'Water Pump DC 6V', qty: 1 },
+    ],
+  },
+  {
+    category: 'Displays',
+    items: [
+      { name: 'LCD (16x2, I2C)', qty: 1 },
+    ],
+  },
+  {
+    category: 'General Electronics',
+    items: [
+      { name: 'LEDs (Assorted Colors)', qty: 10 },
+      { name: 'Push Switch', qty: 5 },
+      { name: 'Resistors - 100Ω, 220Ω, 1kΩ, 4.7kΩ, 10kΩ', qty: 50 },
+      { name: 'Breadboards', qty: 2 },
+      { name: 'Jumper Wires (Pack of 30) MM, MF, FF', qty: 3 },
+    ],
+  },
+  {
+    category: 'Power Supply',
+    items: [
+      { name: '3.7Volt 18650 Battery', qty: 2 },
+      { name: '2-cell battery case', qty: 1 },
+      { name: '2-cell Battery charger', qty: 1 },
+    ],
+  },
+];
+
 function getRegistrationUrl(slug: string, fallbackUrl: string) {
   return WING_REGISTRATION_LINKS[slug] || fallbackUrl;
 }
@@ -58,12 +122,6 @@ function handleRegistrationClick(
 }
 
 // ─── Wing Logo Display Component ──────────────────────────────────────────────
-/**
- * Renders the wing logo inside a premium dark frame.
- * `variant="desktop"` → taller frame used in the right column on desktop.
- * `variant="mobile"`  → slightly shorter, full-width, used between
- *                        the title block and the CTA buttons on mobile.
- */
 const WingLogoFrame = ({
   src,
   alt,
@@ -83,14 +141,9 @@ const WingLogoFrame = ({
       className={`wing-logo-frame wing-logo-frame--${variant}`}
       style={{ width: '100%' }}
     >
-      {/* dot-grid texture */}
       <div className="wlf-texture" />
-      {/* radial glow behind image */}
       <div className="wlf-glow" />
-      {/* shimmer sweep */}
       <div className="wlf-shimmer" />
-
-      {/* image */}
       <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', padding }}>
         <img
           src={src}
@@ -112,11 +165,142 @@ const WingLogoFrame = ({
           className="wlf-img"
         />
       </div>
-
-      {/* eyebrow pill — bottom-left */}
       <div className="wlf-pill">
         <span className="wlf-pill-dot" />
         <span className="wlf-pill-text">{eyebrow}</span>
+      </div>
+    </div>
+  );
+};
+
+// ─── Components Table (Wing 1 only) ──────────────────────────────────────────
+const ComponentsTable = ({ t }: { t: ReturnType<typeof useTokens> }) => {
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  return (
+    <div style={{ width: '100%' }}>
+      {/* Header note */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '10px',
+        marginBottom: '20px', padding: '12px 16px',
+        background: 'rgba(46,204,113,0.07)',
+        border: '1px solid rgba(46,204,113,0.25)',
+        borderRadius: '12px',
+      }}>
+        <Package size={16} color="#2ECC71" strokeWidth={2} />
+        <span style={{ color: t.textSecondary, fontSize: '13px', lineHeight: 1.6 }}>
+          The following components are required for the Basic Robotics Projects wing. Participants are expected to arrange these components before the bootcamp begins.
+        </span>
+      </div>
+
+      {/* Table */}
+      <div style={{
+        border: '1px solid rgba(46,204,113,0.25)',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+      }}>
+        {/* Table Head */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '180px 1fr 90px',
+          background: 'rgba(46,204,113,0.18)',
+          borderBottom: '1px solid rgba(46,204,113,0.3)',
+          padding: '14px 20px',
+          gap: '12px',
+        }}>
+          {['Category', 'Component', 'Quantity'].map((h) => (
+            <span key={h} style={{
+              color: '#2ECC71', fontSize: '12px', fontWeight: 900,
+              letterSpacing: '0.1em', textTransform: 'uppercase' as const,
+              textAlign: h === 'Quantity' ? 'center' as const : 'left' as const,
+            }}>{h}</span>
+          ))}
+        </div>
+
+        {/* Table Body */}
+        {WING1_COMPONENTS.map((group, gi) =>
+          group.items.map((item, ii) => {
+            const rowKey = `${gi}-${ii}`;
+            const isFirstInGroup = ii === 0;
+            const isLastInGroup = ii === group.items.length - 1;
+            const isLastGroup = gi === WING1_COMPONENTS.length - 1;
+            const showBorderBottom = !(isLastGroup && isLastInGroup);
+
+            return (
+              <div
+                key={rowKey}
+                onMouseEnter={() => setHoveredRow(rowKey)}
+                onMouseLeave={() => setHoveredRow(null)}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '180px 1fr 90px',
+                  gap: '12px',
+                  padding: '13px 20px',
+                  borderBottom: showBorderBottom ? '1px solid rgba(46,204,113,0.1)' : 'none',
+                  background: hoveredRow === rowKey
+                    ? 'rgba(46,204,113,0.07)'
+                    : gi % 2 === 0 ? 'rgba(46,204,113,0.02)' : 'rgba(0,0,0,0.15)',
+                  transition: 'background 0.2s ease',
+                  alignItems: 'center',
+                }}
+              >
+                {/* Category cell */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  borderRight: '1px solid rgba(46,204,113,0.12)',
+                  paddingRight: '12px',
+                  minHeight: '32px',
+                }}>
+                  {isFirstInGroup ? (
+                    <span style={{
+                      color: '#2ECC71', fontSize: '13px', fontWeight: 800,
+                      lineHeight: 1.4,
+                    }}>{group.category}</span>
+                  ) : (
+                    <span style={{ color: 'transparent', fontSize: '13px', userSelect: 'none' }}>—</span>
+                  )}
+                </div>
+
+                {/* Component name */}
+                <span style={{
+                  color: t.textPrimary, fontSize: '14px', lineHeight: 1.6,
+                  fontWeight: hoveredRow === rowKey ? 600 : 400,
+                  transition: 'font-weight 0.2s ease',
+                }}>{item.name}</span>
+
+                {/* Quantity */}
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    minWidth: '36px', height: '28px',
+                    background: 'rgba(46,204,113,0.12)',
+                    border: '1px solid rgba(46,204,113,0.3)',
+                    borderRadius: '8px',
+                    color: '#2ECC71', fontSize: '13px', fontWeight: 900,
+                    padding: '0 8px',
+                  }}>{item.qty}</span>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Total count */}
+      <div style={{
+        display: 'flex', justifyContent: 'flex-end', marginTop: '12px',
+        gap: '8px', alignItems: 'center',
+      }}>
+        <span style={{ color: t.textSecondary, fontSize: '12px' }}>Total unique components:</span>
+        <span style={{
+          color: '#2ECC71', fontSize: '13px', fontWeight: 800,
+          background: 'rgba(46,204,113,0.1)',
+          border: '1px solid rgba(46,204,113,0.3)',
+          borderRadius: '8px', padding: '2px 10px',
+        }}>
+          {WING1_COMPONENTS.reduce((acc, g) => acc + g.items.length, 0)}
+        </span>
       </div>
     </div>
   );
@@ -128,7 +312,7 @@ export function BootcampWingDetailPage() {
   const wing = getBootcampWingBySlug(wingSlug);
   const t = useTokens();
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'learn' | 'roadmap' | 'outcomes'>('learn');
+  const [activeTab, setActiveTab] = useState<'learn' | 'roadmap' | 'outcomes' | 'components'>('learn');
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [hoveredInfo, setHoveredInfo] = useState<number | null>(null);
 
@@ -181,6 +365,8 @@ export function BootcampWingDetailPage() {
   }
 
   const logoSrc = getWingLogo(wing.slug);
+  const isWing1 = wing.slug === 'basic-robotics-projects';
+  const formatTag = WING_FORMAT_TAG[wing.slug];
 
   const infoItems = [
     { icon: <Target size={17} color="#2ECC71" strokeWidth={2} />,        label: 'Target Group',    value: wing.targetGroup    },
@@ -192,6 +378,14 @@ export function BootcampWingDetailPage() {
     ...(wing.capacity       ? [{ icon:<Armchair size={17} color="#2ECC71" strokeWidth={2}/>, label:'Capacity',        value:wing.capacity       }] : []),
     ...(wing.softwareAccess ? [{ icon:<Monitor  size={17} color="#2ECC71" strokeWidth={2}/>, label:'Software Access', value:wing.softwareAccess }] : []),
   ];
+
+  // Tab definitions — conditionally include Components for Wing 1
+  const tabs = [
+    { key: 'learn',      label: 'What You Learn', icon: <CheckCircle2 size={14} strokeWidth={2.2}/> },
+    { key: 'roadmap',    label: 'Roadmap',        icon: <Map          size={14} strokeWidth={2.2}/> },
+    { key: 'outcomes',   label: 'Outcomes',       icon: <Trophy       size={14} strokeWidth={2.2}/> },
+    ...(isWing1 ? [{ key: 'components', label: 'Components', icon: <Package size={14} strokeWidth={2.2}/> }] : []),
+  ] as const;
 
   return (
     <main style={{ minHeight:'100vh', backgroundColor:t.pageBg, color:t.textPrimary, overflowX:'hidden' }}>
@@ -208,6 +402,7 @@ export function BootcampWingDetailPage() {
         @keyframes wlfShimmer    { 0%{transform:translateX(-130%) skewX(-16deg)} 100%{transform:translateX(230%) skewX(-16deg)} }
         @keyframes wlfGlowPulse  { 0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)} 50%{opacity:.88;transform:translate(-50%,-50%) scale(1.08)} }
         @keyframes fadeUp        { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes tagPop        { 0%{transform:scale(0.85);opacity:0} 100%{transform:scale(1);opacity:1} }
 
         /* ── Back link ── */
         .back-link { display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:all .25s ease; font-weight:600; font-size:14px; }
@@ -248,6 +443,20 @@ export function BootcampWingDetailPage() {
         .outcome-row { display:flex; align-items:flex-start; gap:14px; padding:16px 20px; border:1px solid rgba(46,204,113,.14); border-radius:14px; background:rgba(46,204,113,.025); transition:all .25s ease; cursor:default; }
         .outcome-row:hover { border-color:rgba(46,204,113,.4)!important; background:rgba(46,204,113,.07)!important; transform:translateX(7px); }
 
+        /* ── Format tag (Solo / Team) ── */
+        .format-tag {
+          display:inline-flex; align-items:center; gap:6px;
+          border-radius:999px; padding:5px 14px;
+          font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+          animation:tagPop .4s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .format-tag--team {
+          background:rgba(46,204,113,0.14); border:1.5px solid rgba(46,204,113,0.45); color:#2ECC71;
+        }
+        .format-tag--solo {
+          background:rgba(99,179,237,0.12); border:1.5px solid rgba(99,179,237,0.4); color:#63B3ED;
+        }
+
         /* ── Final CTA ── */
         .final-cta-reg { position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:10px; background-color:#2ECC71; color:#000; padding:15px 36px; border-radius:14px; font-weight:900; font-size:16px; text-decoration:none; box-shadow:0 6px 24px rgba(46,204,113,.45); transition:all .3s cubic-bezier(.4,0,.2,1); }
         .final-cta-reg::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent); transform:translateX(-100%); transition:transform .5s ease; }
@@ -273,7 +482,6 @@ export function BootcampWingDetailPage() {
           box-shadow: 0 0 0 1px rgba(46,204,113,0.06), 0 8px 40px rgba(0,0,0,0.5), 0 0 50px rgba(46,204,113,0.07);
           transition: box-shadow .4s ease, border-color .4s ease;
         }
-        /* top accent line */
         .wing-logo-frame::before {
           content:''; position:absolute; top:0; left:0; right:0; height:3px; z-index:5;
           background:linear-gradient(90deg,#2ECC71,#3DED97,#27AE60);
@@ -287,14 +495,11 @@ export function BootcampWingDetailPage() {
           filter: drop-shadow(0 0 20px rgba(46,204,113,0.42)) drop-shadow(0 8px 20px rgba(0,0,0,0.7)) !important;
           transform: scale(1.04);
         }
-
-        /* dot-grid texture */
         .wlf-texture {
           position:absolute; inset:0; pointer-events:none; z-index:0;
           background-image: radial-gradient(circle,rgba(46,204,113,0.055) 1px,transparent 1px);
           background-size: 22px 22px;
         }
-        /* radial glow */
         .wlf-glow {
           position:absolute; left:50%; top:50%;
           transform:translate(-50%,-50%);
@@ -303,13 +508,11 @@ export function BootcampWingDetailPage() {
           filter:blur(20px); pointer-events:none; z-index:1;
           animation:wlfGlowPulse 3.8s ease-in-out infinite;
         }
-        /* shimmer */
         .wlf-shimmer {
           position:absolute; inset:0; z-index:3; pointer-events:none;
           background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.055) 50%,transparent 70%);
           animation:wlfShimmer 5.5s ease-in-out infinite;
         }
-        /* image */
         .wlf-img {
           display:block; width:100%; max-width:100%; height:auto;
           object-fit:contain; object-position:center; border-radius:10px;
@@ -317,7 +520,6 @@ export function BootcampWingDetailPage() {
           filter:drop-shadow(0 0 10px rgba(46,204,113,0.22)) drop-shadow(0 6px 18px rgba(0,0,0,0.65));
           transition:filter .4s ease, transform .4s ease;
         }
-        /* eyebrow pill */
         .wlf-pill {
           position:absolute; bottom:10px; left:10px; z-index:4;
           display:inline-flex; align-items:center; gap:5px;
@@ -334,48 +536,31 @@ export function BootcampWingDetailPage() {
         /* ════════════════════════════════════════
            HERO LAYOUT
            ════════════════════════════════════════ */
-
-        /* Desktop: text left (1fr), logo+fee right (300px) */
         .hero-grid {
           display: grid;
           grid-template-columns: 1fr 300px;
           gap: 48px;
           align-items: flex-start;
         }
-
-        /* The right column stacks logo frame then fee badge */
         .hero-right-col {
           display: flex;
           flex-direction: column;
           gap: 14px;
         }
-
-        /* Mobile-only logo strip: hidden on desktop */
         .logo-mobile-block { display: none; }
-
-        /* Mobile-only fee strip (already in original code) */
         .fee-inline-strip { display: none; }
 
-        /* ── Mobile ── */
         @media (max-width: 700px) {
-
-          /* single column, no gap (children control their own spacing) */
           .hero-grid {
             grid-template-columns: 1fr;
             gap: 0;
           }
-
-          /* hide desktop right col entirely */
           .hero-right-col { display: none; }
-
-          /* show mobile logo block (sits between eyebrow and title) */
           .logo-mobile-block {
             display: block;
             width: 100%;
             margin-bottom: 20px;
           }
-
-          /* show compact fee strip */
           .fee-inline-strip {
             display: inline-flex;
             align-items: center;
@@ -386,17 +571,15 @@ export function BootcampWingDetailPage() {
             padding: 8px 16px 8px 12px;
             margin-bottom: 22px;
           }
-
-          /* center the eyebrow and text */
           .hero-eyebrow-wrap { justify-content: center; }
           .hero-cta-row      { justify-content: center; }
           .hero-desc         { margin-left:auto; margin-right:auto; }
           .hero-text-col     { text-align: center; }
+          .format-tags-row   { justify-content: center; }
         }
 
-        /* very small phones */
         @media (max-width: 420px) {
-          .tab-button { padding:9px 10px; font-size:12px; gap:4px; }
+          .tab-button { padding:9px 8px; font-size:11px; gap:4px; }
           .roadmap-row { grid-template-columns:85px 1fr; }
         }
       `}</style>
@@ -426,24 +609,34 @@ export function BootcampWingDetailPage() {
               className="hero-text-col"
               style={{ opacity:mounted?1:0, transform:mounted?'none':'translateY(30px)', transition:'opacity .6s ease .1s,transform .6s ease .1s' }}
             >
-              {/* Eyebrow pill */}
+              {/* Eyebrow pill + Format tag row */}
               <div style={{ display:'flex', marginBottom:'18px' }}>
-                <div className="hero-eyebrow-wrap" style={{ display:'inline-flex', alignItems:'center', gap:'8px', backgroundColor:'rgba(46,204,113,0.12)', border:'1px solid rgba(46,204,113,0.3)', borderRadius:'999px', padding:'6px 16px' }}>
-                  <span style={{ width:'7px', height:'7px', borderRadius:'50%', backgroundColor:'#2ECC71', display:'inline-block', boxShadow:'0 0 8px rgba(46,204,113,0.8)', animation:'dotPulse 2s ease-in-out infinite' }} />
-                  <span style={{ color:'#2ECC71', fontSize:'12px', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase' as const }}>
-                    {wing.eyebrow}
-                  </span>
+                <div className="hero-eyebrow-wrap" style={{ display:'inline-flex', alignItems:'center', gap:'10px', flexWrap:'wrap' as const }}>
+                  {/* Eyebrow pill */}
+                  <div style={{ display:'inline-flex', alignItems:'center', gap:'8px', backgroundColor:'rgba(46,204,113,0.12)', border:'1px solid rgba(46,204,113,0.3)', borderRadius:'999px', padding:'6px 16px' }}>
+                    <span style={{ width:'7px', height:'7px', borderRadius:'50%', backgroundColor:'#2ECC71', display:'inline-block', boxShadow:'0 0 8px rgba(46,204,113,0.8)', animation:'dotPulse 2s ease-in-out infinite' }} />
+                    <span style={{ color:'#2ECC71', fontSize:'12px', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase' as const }}>
+                      {wing.eyebrow}
+                    </span>
+                  </div>
+
+                  {/* Solo / Team tag */}
+                  {formatTag && (
+                    <div
+                      className={`format-tag format-tag--${formatTag.toLowerCase()}`}
+                      style={{ animationDelay: '0.2s' }}
+                    >
+                      {formatTag === 'Team'
+                        ? <UsersRound size={12} strokeWidth={2.5} />
+                        : <UserCheck  size={12} strokeWidth={2.5} />
+                      }
+                      {formatTag}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/*
-                ══════════════════════════════════════════
-                MOBILE-ONLY LOGO BLOCK
-                Appears between eyebrow pill and page title
-                on screens ≤ 700 px.
-                Hidden on desktop via CSS.
-                ══════════════════════════════════════════
-              */}
+              {/* Mobile-only logo */}
               <div className="logo-mobile-block">
                 <WingLogoFrame
                   src={logoSrc}
@@ -453,10 +646,7 @@ export function BootcampWingDetailPage() {
                 />
               </div>
 
-              {/*
-                ── MOBILE-ONLY compact fee strip ──
-                Hidden on desktop via CSS.
-              */}
+              {/* Mobile-only fee strip */}
               <div style={{ display:'flex', justifyContent:'center' }}>
                 <div className="fee-inline-strip">
                   <span style={{ width:'28px', height:'28px', borderRadius:'8px', background:'rgba(46,204,113,0.15)', border:'1px solid rgba(46,204,113,0.35)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -503,20 +693,11 @@ export function BootcampWingDetailPage() {
               </div>
             </div>
 
-            {/*
-              ══ RIGHT COLUMN (desktop only) ══
-              Contains:
-                1. Wing logo frame (full image, object-contain)
-                2. Fee badge (floating)
-                3. Status pill
-              Hidden on mobile via CSS — mobile equivalents live
-              inside the left column above.
-            */}
+            {/* ── RIGHT COLUMN (desktop only) ── */}
             <div
               className="hero-right-col"
               style={{ opacity:mounted?1:0, transform:mounted?'none':'translateX(30px)', transition:'opacity .6s ease .22s,transform .6s ease .22s' }}
             >
-              {/* Logo frame */}
               <WingLogoFrame
                 src={logoSrc}
                 alt={`${wing.title} wing logo`}
@@ -540,6 +721,19 @@ export function BootcampWingDetailPage() {
                   <div style={{ backgroundColor:'rgba(46,204,113,0.12)', border:'1px solid rgba(46,204,113,0.3)', borderRadius:'999px', padding:'7px 18px', color:'#2ECC71', fontSize:'13px', fontWeight:700, display:'inline-flex', alignItems:'center', gap:'8px' }}>
                     <span className="status-dot" style={{ width:'6px', height:'6px', borderRadius:'50%', backgroundColor:'#2ECC71', display:'inline-block' }} />
                     {wing.status}
+                  </div>
+                </div>
+              )}
+
+              {/* Format tag — desktop right col */}
+              {formatTag && (
+                <div style={{ display:'flex', justifyContent:'center' }}>
+                  <div className={`format-tag format-tag--${formatTag.toLowerCase()}`} style={{ fontSize:'13px', padding:'7px 20px' }}>
+                    {formatTag === 'Team'
+                      ? <UsersRound size={14} strokeWidth={2.5} />
+                      : <UserCheck  size={14} strokeWidth={2.5} />
+                    }
+                    {formatTag} Wing
                   </div>
                 </div>
               )}
@@ -584,16 +778,39 @@ export function BootcampWingDetailPage() {
           </div>
 
           {/* Tab bar */}
-          <div style={{ display:'flex', gap:'4px', borderBottom:'1px solid rgba(46,204,113,0.18)', marginBottom:'28px' }}>
-            {([
-              { key:'learn',    label:'What You Learn', icon:<CheckCircle2 size={14} strokeWidth={2.2}/> },
-              { key:'roadmap',  label:'Roadmap',        icon:<Map          size={14} strokeWidth={2.2}/> },
-              { key:'outcomes', label:'Outcomes',       icon:<Trophy       size={14} strokeWidth={2.2}/> },
-            ] as const).map((tab) => (
-              <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+          <div style={{ display:'flex', gap:'4px', borderBottom:'1px solid rgba(46,204,113,0.18)', marginBottom:'28px', flexWrap:'wrap' as const }}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as typeof activeTab)}
                 className={`tab-button ${activeTab===tab.key?'tab-active':''}`}
-                style={{ color:activeTab===tab.key?'#2ECC71':t.textSecondary, backgroundColor:activeTab===tab.key?'rgba(46,204,113,0.07)':'transparent' }}>
-                {tab.icon}{tab.label}
+                style={{
+                  color: activeTab===tab.key ? '#2ECC71' : t.textSecondary,
+                  backgroundColor: activeTab===tab.key ? 'rgba(46,204,113,0.07)' : 'transparent',
+                  ...(tab.key === 'components' ? {
+                    borderTop: '1px solid rgba(46,204,113,0.25)',
+                    borderLeft: '1px solid rgba(46,204,113,0.15)',
+                    borderRight: '1px solid rgba(46,204,113,0.15)',
+                  } : {}),
+                }}
+              >
+                {tab.icon}
+                {tab.label}
+                {/* Wing-1-only badge on the tab */}
+                {tab.key === 'components' && (
+                  <span style={{
+                    marginLeft: '4px',
+                    background: 'rgba(46,204,113,0.18)',
+                    border: '1px solid rgba(46,204,113,0.35)',
+                    color: '#2ECC71',
+                    fontSize: '9px',
+                    fontWeight: 900,
+                    letterSpacing: '0.08em',
+                    borderRadius: '999px',
+                    padding: '1px 7px',
+                    textTransform: 'uppercase' as const,
+                  }}>W1</span>
+                )}
               </button>
             ))}
           </div>
@@ -642,6 +859,12 @@ export function BootcampWingDetailPage() {
                 ))}
               </div>
             )}
+
+            {/* ══ COMPONENTS TAB — Wing 1 only ══ */}
+            {activeTab === 'components' && isWing1 && (
+              <ComponentsTable t={t} />
+            )}
+
           </div>
         </section>
 
