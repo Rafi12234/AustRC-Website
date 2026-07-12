@@ -37,6 +37,7 @@ import JourneyPage from './components/Journeypage';
 import { BatchRepresentativePage } from './components/BatchRepresentativePage';
 import { RegistrationPage } from './components/RegistrationPage';
 import { AdminPage } from './components/admin/AdminPage';
+import { SubExecutiveRegistrationPage } from './features/subExecutiveRegistration/SubExecutiveRegistrationPage';
 
 import { BootcampPage } from './components/bootcamp/BootcampPage';
 import { BootcampWingDetailPage } from './components/bootcamp/BootcampWingDetailPage';
@@ -100,6 +101,7 @@ function SiteLayout() {
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/gm-registration" element={<RegistrationPage />} />
           <Route path="/GM_Registration" element={<RegistrationPage />} />
+          <Route path="/sub-executive-registration" element={<SubExecutiveRegistrationPage />} />
 
           <Route path="/bootcamp" element={<BootcampPage />} />
           {/* Short wing-N redirect routes → go directly to Google Form */}
