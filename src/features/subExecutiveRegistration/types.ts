@@ -4,7 +4,6 @@ export type QuestionType =
   | 'single_choice'
   | 'multiple_choice'
   | 'yes_no'
-  | 'number'
   | 'url';
 
 export interface SelectOption {
@@ -12,7 +11,8 @@ export interface SelectOption {
   name: string;
 }
 
-export interface Team extends SelectOption {
+export interface Team
+  extends SelectOption {
   id: string;
   slug: string;
   description: string | null;
@@ -36,32 +36,60 @@ export interface ScreeningQuestion {
   id: string;
   teamId: string;
   questionText: string;
+  helpText: string | null;
   questionType: QuestionType;
   isRequired: boolean;
   displayOrder: number;
   options: string[] | null;
+  allowOther: boolean;
 }
 
-export type AnswerValue = string | string[];
+export type AnswerValue =
+  | string
+  | string[];
+
+export interface QuestionAnswer {
+  value: AnswerValue;
+  otherText: string;
+}
 
 export interface ApplicationFormData {
   fullName: string;
   departmentId: string;
   studentId: string;
   semesterId: string;
-  teamId: string;
-  eduEmail: string;
+
   personalEmail: string;
+  eduEmail: string;
   phoneNumber: string;
-  linkedinUrl: string;
+  presentAddress: string;
+  facebookUrl: string;
+
+  workedWithAustrcBefore:
+    | 'yes'
+    | 'no'
+    | '';
+
+  previousWorkDescription: string;
+
+  firstTeamId: string;
+  secondTeamId: string;
 }
 
 export interface ApplicationSubmissionResult {
   applicationNumber: string;
   status: string;
   submittedAt: string;
+
   applicantName: string;
   studentId: string;
-  teamName: string;
+
+  firstPreferenceTeamName: string;
+
+  secondPreferenceTeamName:
+    | string
+    | null;
+
   recruitmentCycle: string;
+  photoUrl: string;
 }
