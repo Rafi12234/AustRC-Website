@@ -565,3 +565,175 @@
   .subex-success-details { grid-template-columns: 1fr; }
   .subex-success-card { border-radius: 1.25rem; }
 }
+/* Applicant photo, experience and two-preference additions */
+
+.subex-photo-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 240px) 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1.75rem;
+}
+
+.subex-photo-picker {
+  position: relative;
+  display: block;
+  min-height: 240px;
+  overflow: hidden;
+  cursor: pointer;
+
+  border:
+    1px dashed
+    var(--subex-border-brand);
+
+  border-radius: 1.2rem;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--subex-brand) 7%,
+      var(--subex-surface)
+    );
+}
+
+.subex-photo-picker:hover {
+  border-color:
+    var(--subex-brand);
+}
+
+.subex-photo-picker img {
+  width: 100%;
+  height: 240px;
+  display: block;
+  object-fit: cover;
+}
+
+.subex-photo-picker
+  > input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.subex-photo-placeholder {
+  min-height: 240px;
+  padding: 1.25rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.55rem;
+  text-align: center;
+
+  color:
+    var(--subex-text-secondary);
+}
+
+.subex-photo-placeholder svg {
+  color:
+    var(--subex-brand);
+}
+
+.subex-photo-placeholder strong {
+  color:
+    var(--subex-text-primary);
+}
+
+.subex-photo-placeholder span {
+  font-size: 0.82rem;
+
+  color:
+    var(--subex-text-muted);
+}
+
+.subex-photo-copy {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1.15rem;
+
+  border:
+    1px solid
+    var(--subex-border);
+
+  border-radius: 1rem;
+
+  background:
+    var(--subex-page-alt);
+}
+
+.subex-photo-copy svg {
+  flex: 0 0 auto;
+
+  color:
+    var(--subex-brand);
+}
+
+.subex-photo-copy strong {
+  display: block;
+
+  color:
+    var(--subex-text-primary);
+}
+
+.subex-photo-copy p {
+  margin: 0.45rem 0;
+  line-height: 1.65;
+
+  color:
+    var(--subex-text-secondary);
+}
+
+.subex-photo-copy small {
+  overflow-wrap: anywhere;
+
+  color:
+    var(--subex-brand);
+}
+
+.subex-experience-field {
+  margin-top: 0.5rem;
+}
+
+.subex-conditional-field {
+  margin-top: 1.25rem;
+}
+
+.subex-team-question-block {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+
+  border-top:
+    1px solid
+    var(--subex-border);
+}
+
+.subex-team-question-block > h3 {
+  margin: 0 0 1.2rem;
+
+  color:
+    var(--subex-text-primary);
+
+  font-size: 1.05rem;
+}
+
+.subex-other-input {
+  margin-top: 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .subex-photo-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .subex-photo-picker,
+  .subex-photo-picker img,
+  .subex-photo-placeholder {
+    min-height: 220px;
+    height: 220px;
+  }
+}

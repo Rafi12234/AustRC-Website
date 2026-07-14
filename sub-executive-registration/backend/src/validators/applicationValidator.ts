@@ -1,16 +1,5 @@
 import { z } from 'zod';
 
-/*
- * The database contains PostgreSQL-compatible UUID-shaped IDs such as:
- *
- * 10000000-0000-0000-0000-000000000001
- *
- * These values have the correct UUID/GUID structure, but they do not satisfy
- * the RFC version and variant rules enforced by z.uuid().
- *
- * z.guid() validates the identifier structure without requiring a specific
- * UUID version or variant.
- */
 const questionIdSchema = z.guid({
   error: 'Invalid question ID.',
 });
@@ -19,42 +8,20 @@ const teamIdSchema = z.guid({
   error: 'Invalid team ID.',
 });
 
-/*
- * LinkedIn is optional.
- *
- * An empty string is converted to null before it reaches the service layer.
- */
-const optionalLinkedInUrl = z
-  .union([
-    z.literal(''),
-
-    z
-      .url({
-        error: 'Enter a valid LinkedIn URL.',
-      })
-      .refine(
-        (value) =>
-          /^https?:\/\/([a-z]{2,3}\.)?linkedin\.com\//i.test(value),
-        {
-          error: 'The URL must be a LinkedIn profile URL.',
-        },
+const facebookUrlSchema = z
+  .url({
+    error: 'Enter a valid Facebook profile URL.',
+  })
+  .refine(
+    (value) =>
+      /^https?:\/\/([a-z0-9-]+\.)?(facebook\.com|fb\.com)\//i.test(
+        value,
       ),
-  ])
-  .optional()
-  .transform((value) => {
-    if (!value) {
-      return null;
-    }
+    {
+      error: 'The URL must be a Facebook profile URL.',
+    },
+  );
 
-    return value;
-  });
-
-/*
- * One answer submitted for one screening question.
- *
- * Text-based questions use answerText.
- * Multiple-choice questions may use answerJson.
- */
 const answerSchema = z
   .object({
     questionId: questionIdSchema,
@@ -62,188 +29,199 @@ const answerSchema = z
     answerText: z
       .string()
       .trim()
-      .max(5000, {
-        error: 'An answer cannot contain more than 5,000 characters.',
-      })
+      .max(5000)
       .nullable()
       .optional(),
 
     answerJson: z
       .array(
-        z
-          .string()
-          .trim()
-          .min(1, {
-            error: 'Selected answer values cannot be empty.',
-          })
-          .max(250, {
-            error: 'A selected answer cannot exceed 250 characters.',
-          }),
+        z.string().trim().min(1).max(250),
       )
-      .max(30, {
-        error: 'A maximum of 30 options can be selected.',
-      })
+      .max(30)
+      .nullable()
+      .optional(),
+
+    otherText: z
+      .string()
+      .trim()
+      .max(1000)
       .nullable()
       .optional(),
   })
   .refine(
-    (answer) => {
-      const hasText =
-        typeof answer.answerText === 'string' &&
-        answer.answerText.trim().length > 0;
-
-      const hasJson =
-        Array.isArray(answer.answerJson) &&
-        answer.answerJson.length > 0;
-
-      return hasText || hasJson;
-    },
+    (answer) =>
+      Boolean(
+        answer.answerText?.trim() ||
+          answer.answerJson?.length ||
+          answer.otherText?.trim(),
+      ),
     {
-      error: 'Each submitted answer must contain a value.',
+      error:
+        'Each submitted answer must contain a value.',
     },
   );
 
-/*
- * Validates the complete registration submission body.
- */
-export const createApplicationSchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(2, {
-      error: 'Full name must contain at least 2 characters.',
-    })
-    .max(150, {
-      error: 'Full name cannot exceed 150 characters.',
-    }),
-
-  departmentId: z.coerce
-    .number()
-    .int({
-      error: 'Department ID must be an integer.',
-    })
-    .positive({
-      error: 'Select a valid department.',
-    }),
-
-  studentId: z
-    .string()
-    .trim()
-    .min(3, {
-      error: 'Student ID must contain at least 3 characters.',
-    })
-    .max(50, {
-      error: 'Student ID cannot exceed 50 characters.',
-    }),
-
-  semesterId: z.coerce
-    .number()
-    .int({
-      error: 'Semester ID must be an integer.',
-    })
-    .positive({
-      error: 'Select a valid semester.',
-    }),
-
+const teamPreferenceSchema = z.object({
   teamId: teamIdSchema,
 
-  eduEmail: z
-    .email({
-      error: 'Enter a valid educational email address.',
-    })
-    .max(255, {
-      error: 'Educational email cannot exceed 255 characters.',
-    }),
-
-  personalEmail: z
-    .email({
-      error: 'Enter a valid personal email address.',
-    })
-    .max(255, {
-      error: 'Personal email cannot exceed 255 characters.',
-    }),
-
-  phoneNumber: z
-    .string()
-    .trim()
-    .min(7, {
-      error: 'Phone number must contain at least 7 characters.',
-    })
-    .max(20, {
-      error: 'Phone number cannot exceed 20 characters.',
-    })
-    .regex(/^[+0-9()\-\s]+$/, {
-      error: 'Enter a valid phone number.',
-    }),
-
-  linkedinUrl: optionalLinkedInUrl,
+  preferenceOrder: z.union([
+    z.literal(1),
+    z.literal(2),
+  ]),
 
   answers: z
     .array(answerSchema)
-    .max(100, {
-      error: 'A maximum of 100 answers can be submitted.',
-    })
-    .optional()
+    .max(100)
     .default([]),
-
-  submissionData: z
-    .record(z.string(), z.any())
-    .optional()
-    .nullable(),
 });
 
-/*
- * Validates:
- * GET /api/teams/:teamId/questions
- */
+export const createApplicationSchema = z
+  .object({
+    fullName: z
+      .string()
+      .trim()
+      .min(2)
+      .max(150),
+
+    departmentId: z.coerce
+      .number()
+      .int()
+      .positive(),
+
+    studentId: z
+      .string()
+      .trim()
+      .min(3)
+      .max(50),
+
+    semesterId: z.coerce
+      .number()
+      .int()
+      .positive(),
+
+    personalEmail: z
+      .email()
+      .max(255),
+
+    eduEmail: z
+      .email()
+      .max(255),
+
+    phoneNumber: z
+      .string()
+      .trim()
+      .min(7)
+      .max(25)
+      .regex(
+        /^[+0-9()\-\s]+$/,
+        'Enter a valid phone number.',
+      ),
+
+    presentAddress: z
+      .string()
+      .trim()
+      .min(5)
+      .max(2000),
+
+    facebookUrl: facebookUrlSchema,
+
+    workedWithAustrcBefore: z.boolean(),
+
+    previousWorkDescription: z
+      .string()
+      .trim()
+      .max(3000)
+      .nullable()
+      .optional(),
+
+    teamPreferences: z
+      .array(teamPreferenceSchema)
+      .min(1)
+      .max(2),
+  })
+  .superRefine((input, context) => {
+    const firstPreferences =
+      input.teamPreferences.filter(
+        (preference) =>
+          preference.preferenceOrder === 1,
+      );
+
+    if (firstPreferences.length !== 1) {
+      context.addIssue({
+        code: 'custom',
+        path: ['teamPreferences'],
+        message:
+          'Exactly one first team preference is required.',
+      });
+    }
+
+    const secondPreferences =
+      input.teamPreferences.filter(
+        (preference) =>
+          preference.preferenceOrder === 2,
+      );
+
+    if (secondPreferences.length > 1) {
+      context.addIssue({
+        code: 'custom',
+        path: ['teamPreferences'],
+        message:
+          'Only one second team preference is allowed.',
+      });
+    }
+
+    const uniqueTeamIds = new Set(
+      input.teamPreferences.map(
+        (preference) => preference.teamId,
+      ),
+    );
+
+    if (
+      uniqueTeamIds.size !==
+      input.teamPreferences.length
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['teamPreferences'],
+        message:
+          'First and second team preferences must be different.',
+      });
+    }
+
+    if (
+      input.workedWithAustrcBefore &&
+      !input.previousWorkDescription?.trim()
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['previousWorkDescription'],
+        message:
+          'Describe your previous AUSTRC, ARC or RoboMania work.',
+      });
+    }
+  });
+
 export const teamIdParamsSchema = z.object({
   teamId: teamIdSchema,
 });
 
-/*
- * Validates:
- * GET /api/applications/:applicationNumber/status
- */
-export const applicationStatusParamsSchema = z.object({
-  applicationNumber: z
-    .string()
-    .trim()
-    .min(5, {
-      error: 'Invalid application number.',
-    })
-    .max(40, {
-      error: 'Invalid application number.',
-    }),
-});
+export const applicationStatusParamsSchema =
+  z.object({
+    applicationNumber: z
+      .string()
+      .trim()
+      .min(5)
+      .max(40),
+  });
 
-/*
- * Validates the Student ID query parameter used for status checking.
- */
-export const applicationStatusQuerySchema = z.object({
-  studentId: z
-    .string()
-    .trim()
-    .min(3, {
-      error: 'Student ID must contain at least 3 characters.',
-    })
-    .max(50, {
-      error: 'Student ID cannot exceed 50 characters.',
-    }),
-});
+export const applicationStatusQuerySchema =
+  z.object({
+    studentId: z
+      .string()
+      .trim()
+      .min(3)
+      .max(50),
+  });
 
-/*
- * Optional exported TypeScript types.
- */
-export type CreateApplicationInput = z.infer<
-  typeof createApplicationSchema
->;
-
-export type TeamIdParams = z.infer<typeof teamIdParamsSchema>;
-
-export type ApplicationStatusParams = z.infer<
-  typeof applicationStatusParamsSchema
->;
-
-export type ApplicationStatusQuery = z.infer<
-  typeof applicationStatusQuerySchema
->;
+export type ValidatedCreateApplicationInput =
+  z.infer<typeof createApplicationSchema>;
