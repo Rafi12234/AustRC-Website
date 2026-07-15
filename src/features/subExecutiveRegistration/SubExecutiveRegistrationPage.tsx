@@ -39,11 +39,11 @@ const ALLOWED_PHOTO_TYPES = new Set([
   'image/jpg',
   'image/png',
 ]);
-const STRICT_EMAIL_PATTERN =
-  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const PERSONAL_EMAIL_PATTERN =
+  /^[a-z0-9._%+-]+@gmail\.com$/i;
 
 const AUST_EMAIL_PATTERN =
-  /^[A-Z0-9._%+-]+@aust\.edu$/i;
+  /^[a-z0-9._%+-]+@aust\.edu$/i;
 const initialForm: ApplicationFormData = {
   fullName: '',
   departmentId: '',
@@ -311,11 +311,11 @@ function validateForm(): string | null {
     form.eduEmail.trim();
 
   if (
-    !STRICT_EMAIL_PATTERN.test(
+    !PERSONAL_EMAIL_PATTERN.test(
       personalEmail,
     )
   ) {
-    return 'Enter a valid personal email address, for example yourname@gmail.com.';
+    return 'Personal email must be a valid @gmail.com address.';
   }
 
   if (
@@ -747,11 +747,9 @@ function validateForm(): string | null {
       )
     }
 
-    pattern={
-      STRICT_EMAIL_PATTERN.source
-    }
+    pattern="[a-zA-Z0-9._%+-]+@gmail\.com"
 
-    title="Enter a valid email address, for example yourname@gmail.com."
+    title="Enter a valid personal Gmail address ending with @gmail.com."
 
     required
     maxLength={255}
@@ -761,8 +759,8 @@ function validateForm(): string | null {
   />
 
   <small className="subex-field-hint">
-    Enter a complete and valid personal
-    email address.
+    Only a personal email ending with
+    @gmail.com is accepted.
   </small>
 </div>
 
@@ -800,9 +798,7 @@ function validateForm(): string | null {
       )
     }
 
-    pattern={
-      AUST_EMAIL_PATTERN.source
-    }
+    pattern="[a-zA-Z0-9._%+-]+@aust\.edu"
 
     title="Enter your official AUST educational email ending with @aust.edu."
 

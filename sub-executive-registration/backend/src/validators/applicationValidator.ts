@@ -74,8 +74,8 @@ const teamPreferenceSchema = z.object({
     .max(100)
     .default([]),
 });
-const strictEmailPattern =
-  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const personalEmailPattern =
+  /^[A-Z0-9._%+-]+@gmail\.com$/i;
 
 const austEmailPattern =
   /^[A-Z0-9._%+-]+@aust\.edu$/i;
@@ -88,8 +88,8 @@ const personalEmailSchema = z
     'Personal email cannot exceed 255 characters.',
   )
   .regex(
-    strictEmailPattern,
-    'Enter a valid personal email address.',
+    personalEmailPattern,
+    'Personal email must end with @gmail.com.',
   )
   .transform((value) =>
     value.toLowerCase(),

@@ -258,8 +258,9 @@ export function submitApplication(
     studentId:
       form.studentId.trim(),
 
-      austrcId:
-  form.austrcId.trim(),
+    austrcId:
+       form.austrcId.trim(),
+       
     semesterId:
       Number(form.semesterId),
 
